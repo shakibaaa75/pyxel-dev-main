@@ -1,23 +1,32 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import Button, { ArrowRightIcon, MenuIcon, CloseIcon } from "./../button";
 
 interface NavLink {
   name: string;
   href: string;
-  active: boolean;
 }
 
 const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const location = useLocation();
 
   const navLinks: NavLink[] = [
-    { name: "Home", href: "/", active: true },
-    { name: "About Us", href: "/about", active: false },
-    { name: "Services", href: "/services", active: false },
-    { name: "Blogs", href: "/blogs", active: false },
-    { name: "Faq", href: "/faq", active: false },
-    { name: "Contact Us", href: "/contact", active: false },
+    { name: "Home", href: "/" },
+    { name: "About Us", href: "/about" },
+    { name: "Services", href: "/services" },
+    { name: "Blogs", href: "/blogs" },
+    { name: "Faq", href: "/faq" },
+    { name: "Contact Us", href: "/contact" },
   ];
+
+  // Check if link is active based on current pathname
+  const isActive = (href: string) => {
+    if (href === "/") {
+      return location.pathname === "/";
+    }
+    return location.pathname.startsWith(href);
+  };
 
   return (
     <header className="bg-black text-white sticky top-0 z-50 w-full">
@@ -25,28 +34,34 @@ const Header: React.FC = () => {
         <div className="flex items-center justify-between h-20 lg:h-24">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <img
-              src="images/Layer 2.png"
-              alt="PYXEL DEVELOPMENT"
-              className="h-10 w-auto sm:h-12"
-            />
+            <Link to="/">
+              <img
+                src="images/Layer 2.png"
+                alt="PYXEL DEVELOPMENT"
+                className="h-10 w-auto sm:h-12"
+              />
+            </Link>
           </div>
 
           {/* Desktop Navigation - Hidden below 1120px */}
           <nav className="hidden xl:flex items-center gap-8 xl:gap-12">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.href}
+                to={link.href}
                 className={`relative text-base font-medium transition-all duration-300 group ${
-                  link.active
+                  isActive(link.href)
                     ? "text-[#2A7DFF]"
                     : "text-gray-300 hover:text-[#2A7DFF]"
                 }`}
               >
                 {link.name}
-                <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-[#2A7DFF] transition-all duration-300 group-hover:w-full"></span>
-              </a>
+                <span
+                  className={`absolute -bottom-2 left-0 h-0.5 bg-[#2A7DFF] transition-all duration-300 ${
+                    isActive(link.href) ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
+                />
+              </Link>
             ))}
           </nav>
 
@@ -61,7 +76,6 @@ const Header: React.FC = () => {
               </p>
             </div>
 
-            {/* Global Button Component with exact style from your code */}
             <Button>
               Start Your Project
               <ArrowRightIcon />
@@ -106,19 +120,23 @@ const Header: React.FC = () => {
           <div className="flex flex-col h-full p-6 pt-20">
             <nav className="flex flex-col gap-4">
               {navLinks.map((link) => (
-                <a
+                <Link
                   key={link.name}
-                  href={link.href}
+                  to={link.href}
                   className={`relative text-lg font-medium transition-all duration-300 group w-fit ${
-                    link.active
+                    isActive(link.href)
                       ? "text-[#2A7DFF]"
                       : "text-gray-300 hover:text-[#2A7DFF]"
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {link.name}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#2A7DFF] transition-all duration-300 group-hover:w-full"></span>
-                </a>
+                  <span
+                    className={`absolute -bottom-1 left-0 h-0.5 bg-[#2A7DFF] transition-all duration-300 ${
+                      isActive(link.href) ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  />
+                </Link>
               ))}
             </nav>
 
@@ -130,7 +148,6 @@ const Header: React.FC = () => {
                   + 98 (000) - 9630
                 </p>
 
-                {/* Mobile Button - Global Component with full width */}
                 <Button fullWidth={true}>
                   Start Your Project
                   <ArrowRightIcon className="h-4 w-4" />

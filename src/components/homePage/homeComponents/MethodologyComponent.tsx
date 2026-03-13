@@ -107,30 +107,79 @@ export default function MethodologyComponent() {
         className="container mx-auto px-4 sm:px-6 lg:px-12 relative z-10"
       >
         {/* Header with staggered animation */}
-        <div className="mb-12 sm:mb-16 lg:mb-20">
-          <motion.div
-            className="flex items-center gap-2 mb-3 sm:mb-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: smoothEase }}
-          >
-            <span className="text-blue-400 text-xs sm:text-sm">✦</span>
-            <span className="text-gray-400 text-xs sm:text-sm tracking-wide">
-              Creative Toolkit
-            </span>
-          </motion.div>
+        <div className="mb-12 sm:mb-16 lg:mb-20 flex items-start justify-between gap-8">
+          <div className="flex-1">
+            <motion.div
+              className="flex items-center gap-2 mb-3 sm:mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={
+                hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+              }
+              transition={{ duration: 0.6, delay: 0.1, ease: smoothEase }}
+            >
+              <span className="text-blue-400 text-xs sm:text-sm">✦</span>
+              <span className="text-gray-400 text-xs sm:text-sm tracking-wide">
+                Creative Toolkit
+              </span>
+            </motion.div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-            <span className="text-white">
-              {renderAnimatedText("Our Methodology For ", 0.2)}
-            </span>
-            <span className="text-blue-500">
-              {renderAnimatedText(
-                "Success",
-                0.2 + "Our Methodology For ".length * 0.01,
-              )}
-            </span>
-          </h1>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+              <span className="text-white">
+                {renderAnimatedText("Our Methodology For ", 0.2)}
+              </span>
+              <span className="text-blue-500">
+                {renderAnimatedText(
+                  "Success",
+                  0.2 + "Our Methodology For ".length * 0.01,
+                )}
+              </span>
+            </h1>
+          </div>
+
+          {/* Blue Circle - Right side of title */}
+          <motion.div
+            className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex-shrink-0 rotate-continuous cursor-pointer"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={
+              hasAnimated
+                ? { opacity: 1, scale: 1 }
+                : { opacity: 0, scale: 0.8 }
+            }
+            transition={{ duration: 0.6, delay: 0.5, ease: smoothEase }}
+            whileHover={{ scale: 1.05 }}
+          >
+            <svg viewBox="0 0 200 200" className="w-full h-full">
+              {/* Blue circle background */}
+              <circle cx="100" cy="100" r="90" fill="#3B82F6" />
+              {/* Text path */}
+              <defs>
+                <path
+                  id="circlePath"
+                  d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0"
+                  fill="none"
+                />
+              </defs>
+              {/* Rotating text */}
+              <text className="text-[13px] font-medium tracking-widest uppercase fill-black">
+                <textPath href="#circlePath" startOffset="0%">
+                  Contact Now • Contact Now • Contact Now •
+                </textPath>
+              </text>
+              {/* Center arrow */}
+              <g transform="translate(100, 100)">
+                <circle cx="0" cy="0" r="25" fill="#1F1F1F" />
+                <path
+                  d="M -8 0 L 8 0 M 0 -8 L 8 0 L 0 8"
+                  stroke="white"
+                  strokeWidth="2"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  transform="rotate(-45)"
+                />
+              </g>
+            </svg>
+          </motion.div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
