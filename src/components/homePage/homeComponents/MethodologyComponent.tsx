@@ -35,10 +35,8 @@ const methodologyData: MethodologyStep[] = [
   },
 ];
 
-// --- Smooth Easing Curves ---
 const smoothEase: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
-// --- Spring Transition Configs ---
 const springTransition: Transition = {
   type: "spring",
   stiffness: 100,
@@ -65,7 +63,6 @@ export default function MethodologyComponent() {
     setActiveStep(activeStep === id ? id : id);
   };
 
-  // Staggered text animation for header
   const renderAnimatedText = (text: string, baseDelay = 0) => {
     return text.split("").map((letter, index) => {
       const delay = baseDelay + index * 0.01;
@@ -84,15 +81,16 @@ export default function MethodologyComponent() {
   };
 
   return (
-    <div className="h-auto bg-[#0F0F0F] text-white px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-20 font-sans">
+    <div
+      className="h-auto bg-[#161616] text-white py-12 sm:py-16 lg:py-20 overflow-x-hidden"
+      style={{ fontFamily: "Montserrat, sans-serif" }}
+    >
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+        
         @keyframes rotate360 {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
         .rotate-continuous {
           animation: rotate360 30s linear infinite;
@@ -104,10 +102,9 @@ export default function MethodologyComponent() {
 
       <div
         ref={sectionRef}
-        className="container mx-auto px-4 sm:px-6 lg:px-12 relative z-10"
+        className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10"
       >
-        {/* Header with staggered animation */}
-        <div className="mb-12 sm:mb-16 lg:mb-20 flex items-start justify-between gap-8">
+        <div className="mb-10 sm:mb-12 lg:mb-16 xl:mb-20 flex flex-row items-start justify-between gap-4 sm:gap-6">
           <div className="flex-1">
             <motion.div
               className="flex items-center gap-2 mb-3 sm:mb-4"
@@ -123,22 +120,21 @@ export default function MethodologyComponent() {
               </span>
             </motion.div>
 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-              <span className="text-white">
-                {renderAnimatedText("Our Methodology For ", 0.2)}
+            <h1 className="font-['Montserrat'] text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight">
+              <span className="text-white block sm:inline">
+                {renderAnimatedText("Our Methodology ", 0.2)}
               </span>
-              <span className="text-blue-500">
+              <span className="text-blue-500 block sm:inline">
                 {renderAnimatedText(
-                  "Success",
-                  0.2 + "Our Methodology For ".length * 0.01,
+                  "For Success",
+                  0.2 + "Our Methodology ".length * 0.01,
                 )}
               </span>
             </h1>
           </div>
 
-          {/* Blue Circle - Right side of title */}
           <motion.div
-            className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex-shrink-0 rotate-continuous cursor-pointer"
+            className="relative w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] md:w-[140px] md:h-[140px] lg:w-[162px] lg:h-[162px] flex-shrink-0 rotate-continuous cursor-pointer p-[5px]"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={
               hasAnimated
@@ -149,29 +145,33 @@ export default function MethodologyComponent() {
             whileHover={{ scale: 1.05 }}
           >
             <svg viewBox="0 0 200 200" className="w-full h-full">
-              {/* Blue circle background */}
-              <circle cx="100" cy="100" r="90" fill="#3B82F6" />
-              {/* Text path */}
+              <circle cx="100" cy="100" r="95" fill="#3B82F6" />
               <defs>
                 <path
                   id="circlePath"
-                  d="M 100, 100 m -75, 0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0"
+                  d="M 100, 100 m -80, 0 a 80,80 0 1,1 160,0 a 80,80 0 1,1 -160,0"
                   fill="none"
                 />
               </defs>
-              {/* Rotating text */}
-              <text className="text-[13px] font-medium tracking-widest uppercase fill-black">
+              <text
+                style={{
+                  fontSize: "16px",
+                  fontWeight: 500,
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
+                  fill: "black",
+                }}
+              >
                 <textPath href="#circlePath" startOffset="0%">
                   Contact Now • Contact Now • Contact Now •
                 </textPath>
               </text>
-              {/* Center arrow */}
               <g transform="translate(100, 100)">
-                <circle cx="0" cy="0" r="25" fill="#1F1F1F" />
+                <circle cx="0" cy="0" r="28" fill="#1F1F1F" />
                 <path
-                  d="M -8 0 L 8 0 M 0 -8 L 8 0 L 0 8"
+                  d="M -10 0 L 10 0 M 0 -10 L 10 0 L 0 10"
                   stroke="white"
-                  strokeWidth="2"
+                  strokeWidth="2.5"
                   fill="none"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -182,10 +182,9 @@ export default function MethodologyComponent() {
           </motion.div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Left Side - Rotating Circle with Center Image */}
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 items-center">
           <motion.div
-            className="relative w-full max-w-[562px] mx-auto"
+            className="relative w-full max-w-[400px] sm:max-w-[500px] lg:max-w-[562px] mx-auto"
             initial={{ opacity: 0, y: 60, scale: 0.95 }}
             animate={
               hasAnimated
@@ -194,9 +193,7 @@ export default function MethodologyComponent() {
             }
             transition={{ duration: 0.8, delay: 0.3, ease: smoothEase }}
           >
-            {/* Aspect ratio container - 1:1 square */}
             <div className="relative w-full aspect-square">
-              {/* Outer rotating ring image */}
               <motion.div
                 className="absolute inset-0 rotate-continuous"
                 whileHover={{ scale: 1.02 }}
@@ -209,7 +206,6 @@ export default function MethodologyComponent() {
                 />
               </motion.div>
 
-              {/* Center static image */}
               <motion.div
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[67.6%] h-[67.6%] rounded-full overflow-hidden shadow-2xl"
                 initial={{ scale: 0.8, opacity: 0 }}
@@ -229,8 +225,7 @@ export default function MethodologyComponent() {
             </div>
           </motion.div>
 
-          {/* Right Side - Accordion */}
-          <div className="space-y-3 sm:space-y-4">
+          <div className="space-y-3 sm:space-y-4 w-full">
             {methodologyData.map((step, index) => {
               const isActive = activeStep === step.id;
 
@@ -260,7 +255,7 @@ export default function MethodologyComponent() {
                     className="w-full flex items-center justify-between py-3 sm:py-4 group"
                   >
                     <h3
-                      className={`text-base sm:text-lg md:text-xl font-semibold transition-colors duration-300 text-left ${
+                      className={`text-sm sm:text-base md:text-lg lg:text-xl font-semibold transition-colors duration-300 text-left pr-2 ${
                         isActive
                           ? "text-white"
                           : "text-gray-300 group-hover:text-white"
@@ -271,16 +266,16 @@ export default function MethodologyComponent() {
                     <motion.div
                       animate={{ rotate: isActive ? 180 : 0 }}
                       transition={{ duration: 0.3, ease: "easeOut" }}
-                      className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0 ml-4 ${
+                      className={`w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 rounded-full flex items-center justify-center transition-all duration-300 flex-shrink-0 ml-4 ${
                         isActive
                           ? "bg-blue-500"
                           : "bg-gray-800 group-hover:bg-gray-700"
                       }`}
                     >
                       {isActive ? (
-                        <Minus className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+                        <Minus className="w-3 h-3 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4 text-white" />
                       ) : (
-                        <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 group-hover:text-white" />
+                        <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4 text-gray-400 group-hover:text-white" />
                       )}
                     </motion.div>
                   </motion.button>
@@ -300,7 +295,7 @@ export default function MethodologyComponent() {
                         isActive ? { y: 0, opacity: 1 } : { y: 10, opacity: 0 }
                       }
                       transition={{ duration: 0.3, delay: isActive ? 0.1 : 0 }}
-                      className="text-gray-400 text-sm sm:text-base leading-relaxed pb-3 sm:pb-4"
+                      className="text-gray-400 text-xs sm:text-sm md:text-base leading-relaxed pb-3 sm:pb-4"
                     >
                       {step.description}
                     </motion.p>

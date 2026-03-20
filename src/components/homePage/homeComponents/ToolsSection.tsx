@@ -67,10 +67,8 @@ interface ToolsSectionProps {
   onButtonClick?: () => void;
 }
 
-// --- Smooth Easing Curves ---
 const smoothEase: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
-// --- Spring Transition Configs ---
 const springTransition: Transition = {
   type: "spring",
   stiffness: 100,
@@ -100,7 +98,7 @@ const ToolCard: React.FC<{
 
   const getLogoContainerClasses = (): string => {
     let classes =
-      "relative w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300";
+      "relative w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300";
 
     if (showActiveStyles) {
       classes += " scale-110";
@@ -143,7 +141,7 @@ const ToolCard: React.FC<{
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={`
-        group relative flex items-center gap-3 sm:gap-4 p-4 sm:p-5 rounded-2xl cursor-pointer
+        group relative flex items-center gap-2 sm:gap-3 lg:gap-4 p-3 sm:p-4 lg:p-5 rounded-2xl cursor-pointer
         overflow-hidden z-10 transition-all duration-300 ease-out
         border bg-transparent w-full
         ${
@@ -157,11 +155,7 @@ const ToolCard: React.FC<{
         className={`
           absolute inset-0 bg-gradient-to-t from-[#0944A0] to-[#2A7DFF]
           transition-transform duration-500 ease-in-out -z-10
-          ${
-            showActiveStyles
-              ? "scale-y-100 origin-bottom"
-              : "scale-y-0 origin-top"
-          }
+          ${showActiveStyles ? "scale-y-100 origin-bottom" : "scale-y-0 origin-top"}
         `}
       />
 
@@ -178,20 +172,14 @@ const ToolCard: React.FC<{
         />
       </motion.div>
 
-      <div className="flex flex-col min-w-0">
+      <div className="flex flex-col min-w-0 flex-1">
         <h3
-          className={`
-          font-['Montserrat'] text-base sm:text-lg font-semibold transition-colors duration-300 truncate
-          ${showActiveStyles ? "text-white" : "text-white"}
-        `}
+          className={`font-['Montserrat'] text-sm sm:text-base lg:text-lg font-semibold transition-colors duration-300 truncate ${showActiveStyles ? "text-white" : "text-white"}`}
         >
           {tool.name}
         </h3>
         <span
-          className={`
-          font-['Rethink_Sans'] text-xs sm:text-sm transition-colors duration-300
-          ${showActiveStyles ? "text-blue-100" : "text-gray-500"}
-        `}
+          className={`font-['Rethink_Sans'] text-xs sm:text-sm transition-colors duration-300 ${showActiveStyles ? "text-blue-100" : "text-gray-500"}`}
         >
           {tool.category}
         </span>
@@ -223,7 +211,6 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({
     setActiveId(id);
   };
 
-  // Staggered text animation for header
   const renderAnimatedText = (text: string, baseDelay = 0) => {
     return text.split("").map((letter, index) => {
       const delay = baseDelay + index * 0.01;
@@ -244,13 +231,11 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({
   return (
     <section
       ref={sectionRef}
-      className="w-full h-auto bg-[#0a0a0a] py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 xl:px-12"
+      className="w-full h-auto bg-[#161616] py-12 sm:py-16 lg:py-20 overflow-x-hidden"
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-10 sm:mb-12 lg:mb-16 gap-6">
-          <div className="space-y-3 sm:space-y-4">
-            {/* Label */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 sm:mb-10 lg:mb-12 xl:mb-16 gap-4 sm:gap-6">
+          <div className="space-y-2 sm:space-y-3 lg:space-y-4 w-full lg:w-auto">
             <motion.div
               className="flex items-center gap-2 text-[#2A7DFF]"
               initial={{ opacity: 0, y: 20 }}
@@ -259,29 +244,27 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({
               }
               transition={{ duration: 0.6, delay: 0.1, ease: smoothEase }}
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
               <span className="font-['Rethink_Sans'] text-xs sm:text-sm font-medium tracking-wide uppercase">
                 Our Toolbox
               </span>
             </motion.div>
 
-            {/* Title with staggered animation */}
-            <h2 className="font-['Montserrat'] text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white leading-tight">
-              <span className="text-white">
-                {renderAnimatedText("Our Toolbox to ", 0.2)}
+            <h2 className="font-['Montserrat'] text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-white leading-tight">
+              <span className="text-white block sm:inline">
+                {renderAnimatedText("Our Toolbox ", 0.2)}
               </span>
-              <span className="text-[#2A7DFF]">
+              <span className="text-[#2A7DFF] block sm:inline">
                 {renderAnimatedText(
-                  "Innovation",
-                  0.2 + "Our Toolbox to ".length * 0.01,
+                  "to Innovation",
+                  0.2 + "Our Toolbox ".length * 0.01,
                 )}
               </span>
             </h2>
           </div>
 
-          {/* CTA Button */}
           <motion.div
-            className="self-start lg:self-auto whitespace-nowrap"
+            className="self-start lg:self-auto"
             initial={{ opacity: 0, y: 20 }}
             animate={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.6, delay: 0.3, ease: smoothEase }}
@@ -289,19 +272,18 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({
             {buttonLink ? (
               <Button size="default" variant="primary" href={buttonLink}>
                 {buttonText}
-                <ArrowRightIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                <ArrowRightIcon className="h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5" />
               </Button>
             ) : (
               <Button size="default" variant="primary" onClick={onButtonClick}>
                 {buttonText}
-                <ArrowRightIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                <ArrowRightIcon className="h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5" />
               </Button>
             )}
           </motion.div>
         </div>
 
-        {/* Tools Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 lg:gap-4 xl:gap-5">
           {tools.map((tool, index) => (
             <ToolCard
               key={tool.id}

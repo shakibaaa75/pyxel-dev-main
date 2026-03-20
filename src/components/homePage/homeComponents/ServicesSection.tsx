@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import Button, { ArrowRightIcon } from "../../button";
 
-// --- Types ---
 interface ServiceItem {
   id: string;
   title: string;
@@ -21,7 +20,6 @@ interface ServiceItem {
   image: string;
 }
 
-// --- Data ---
 const services: ServiceItem[] = [
   {
     id: "dev",
@@ -79,10 +77,8 @@ const services: ServiceItem[] = [
   },
 ];
 
-// --- Smooth Easing Curves ---
 const smoothEase: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
-// --- Spring Transition Configs ---
 const springTransition: Transition = {
   type: "spring",
   stiffness: 100,
@@ -97,7 +93,6 @@ const buttonSpring: Transition = {
   delay: 0.3,
 };
 
-// --- Components ---
 export default function ServiceShowcase({
   buttonText = "Get In Touch",
   buttonLink,
@@ -130,10 +125,9 @@ export default function ServiceShowcase({
     }
   };
 
-  // Mobile/Tablet Image Component
   const MobileServiceImage = ({ service }: { service: ServiceItem }) => (
     <motion.div
-      className="lg:hidden w-full mt-3 mb-2"
+      className="lg:hidden w-full mt-2 sm:mt-3 mb-1 sm:mb-2"
       initial={{ opacity: 0, height: 0 }}
       animate={{
         opacity: activeService.id === service.id ? 1 : 0,
@@ -147,10 +141,8 @@ export default function ServiceShowcase({
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.1 }}
-          className="relative overflow-hidden rounded-2xl bg-[#161616]"
-          style={{
-            aspectRatio: "16/9",
-          }}
+          className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-[#161616]"
+          style={{ aspectRatio: "16/9" }}
         >
           <img
             src={service.image}
@@ -158,27 +150,26 @@ export default function ServiceShowcase({
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-
-          {/* Mobile Overlay Content */}
-          <div className="absolute bottom-0 left-0 right-0 p-4">
-            <h4 className="text-lg font-semibold text-white mb-1">
+          <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+            <h4 className="text-base sm:text-lg font-semibold text-white mb-1">
               {service.title}
             </h4>
-            <p className="text-sm text-gray-300 line-clamp-2">
+            <p className="text-xs sm:text-sm text-gray-300 line-clamp-2">
               {service.description}
             </p>
           </div>
-
-          {/* Mobile CTA Button */}
           <motion.button
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={buttonSpring}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-[#2E6BFF] flex items-center justify-center shadow-lg"
+            className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#2E6BFF] flex items-center justify-center shadow-lg"
           >
-            <ArrowUpRight className="text-white w-5 h-5" strokeWidth={2.5} />
+            <ArrowUpRight
+              className="text-white w-4 h-4 sm:w-5 sm:h-5"
+              strokeWidth={2.5}
+            />
           </motion.button>
         </motion.div>
       )}
@@ -186,15 +177,14 @@ export default function ServiceShowcase({
   );
 
   return (
-    <div className="h-auto bg-[#161616] flex items-center justify-center py-12 md:py-16 lg:py-20 font-sans relative overflow-hidden">
-      {/* Rotating Background Ball Image */}
+    <div className="h-auto bg-[#161616] flex items-center justify-center py-10 sm:py-12 md:py-16 lg:py-20 font-sans relative overflow-hidden">
       <motion.div
         className="absolute pointer-events-none z-0"
         style={{
           bottom: "clamp(1rem, 5vw, 4rem)",
           right: "clamp(-200px, -10vw, -50px)",
-          width: "clamp(150px, 25vw, 300px)",
-          height: "clamp(150px, 25vw, 300px)",
+          width: "clamp(120px, 20vw, 300px)",
+          height: "clamp(120px, 20vw, 300px)",
         }}
         animate={{ rotate: 360 }}
         transition={{
@@ -210,14 +200,12 @@ export default function ServiceShowcase({
         />
       </motion.div>
 
-      {/* Main Container */}
       <div
         ref={sectionRef}
-        className="container mx-auto px-4 sm:px-6 lg:px-12 relative z-10"
+        className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10"
       >
-        {/* Header */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-8 md:mb-12 lg:mb-16 gap-6 lg:gap-8">
-          <div className="space-y-4">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-6 sm:mb-8 md:mb-10 lg:mb-12 xl:mb-16 gap-4 sm:gap-6 lg:gap-8">
+          <div className="space-y-2 sm:space-y-3 lg:space-y-4 w-full lg:w-auto">
             <div
               className={`font-['Montserrat'] font-semibold text-white transition-all duration-400 ease-out ${
                 isLoaded
@@ -225,7 +213,7 @@ export default function ServiceShowcase({
                   : "opacity-0 translate-y-4"
               }`}
               style={{
-                fontSize: "16px",
+                fontSize: "14px",
                 lineHeight: "19.2px",
                 letterSpacing: "0%",
                 transitionDelay: "0.1s",
@@ -241,42 +229,51 @@ export default function ServiceShowcase({
                   : "opacity-0 translate-y-4"
               }`}
               style={{
-                fontSize: "clamp(32px, 8vw, 45px)",
+                fontSize: "clamp(20px, 6vw, 45px)",
                 lineHeight: "1.2",
                 letterSpacing: "0%",
                 transitionDelay: "0.2s",
               }}
             >
-              <span className="text-white">Software Development </span>
-              <span className="text-[#2E6BFF]">Solutions</span>
+              <span className="text-white block sm:inline">
+                Software Development{" "}
+              </span>
+              <span className="text-[#2E6BFF] block sm:inline">Solutions</span>
             </div>
           </div>
 
-          {/* CTA Button */}
           <div
-            className={`transition-all duration-400 ease-out ${
+            className={`transition-all duration-400 ease-out w-full sm:w-auto ${
               isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
             style={{ transitionDelay: "0.3s" }}
           >
             {buttonLink ? (
-              <Button size="default" variant="primary" href={buttonLink}>
+              <Button
+                size="default"
+                variant="primary"
+                href={buttonLink}
+                className="w-full sm:w-auto"
+              >
                 {buttonText}
-                <ArrowRightIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                <ArrowRightIcon className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
             ) : (
-              <Button size="default" variant="primary" onClick={onButtonClick}>
+              <Button
+                size="default"
+                variant="primary"
+                onClick={onButtonClick}
+                className="w-full sm:w-auto"
+              >
                 {buttonText}
-                <ArrowRightIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                <ArrowRightIcon className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
             )}
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex flex-col lg:flex-row gap-4 md:gap-6 lg:gap-8 xl:gap-12 2xl:gap-16">
-          {/* Left Column: Service List with Mobile Images */}
-          <div className="flex flex-col gap-2 md:gap-3 xl:gap-4 w-full lg:max-w-[480px] xl:max-w-[520px] 2xl:max-w-[560px] flex-shrink-0">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-5 md:gap-6 lg:gap-8 xl:gap-12 2xl:gap-16">
+          <div className="flex flex-col gap-2 sm:gap-3 lg:gap-4 w-full lg:max-w-[480px] xl:max-w-[520px] 2xl:max-w-[560px] flex-shrink-0">
             {services.map((service, index) => {
               const isActive = activeService.id === service.id;
               const arrowRotation = isActive ? 0 : -40;
@@ -309,33 +306,32 @@ export default function ServiceShowcase({
                       style={{
                         width: "100%",
                         height: "auto",
-                        minHeight: "60px",
+                        minHeight: "50px",
                         border: isActive
                           ? "1px solid #4a85ff"
                           : "1px solid #FFFFFF1A",
-                        borderRadius: "20px",
+                        borderRadius: "16px",
                         boxShadow: isActive
                           ? "0 20px 40px -15px rgba(46, 107, 255, 0.4)"
                           : "0 4px 20px -10px rgba(0, 0, 0, 0.3)",
                       }}
                     >
-                      <div className="flex items-center justify-between w-full h-full px-4 xl:px-5 py-2.5 xl:py-4">
-                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <div className="flex items-center justify-between w-full h-full px-3 sm:px-4 xl:px-5 py-2 sm:py-2.5 xl:py-4">
+                        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                           <motion.div
                             whileHover={{ rotate: 5, scale: 1.1 }}
                             transition={springTransition}
                             className={`
-                              p-2 rounded-xl transition-colors duration-500 border flex-shrink-0
+                              p-1.5 sm:p-2 rounded-xl transition-colors duration-500 border flex-shrink-0
                               ${isActive ? "bg-white/10 border-white/20 text-white" : "bg-[#0a0a0a] border-[#2a2a2a] text-gray-400 group-hover:text-white group-hover:border-gray-600"}
                             `}
                           >
-                            <div className="w-5 h-5 xl:w-6 xl:h-6">
+                            <div className="w-4 h-4 sm:w-5 sm:h-5 xl:w-6 xl:h-6">
                               {service.icon}
                             </div>
                           </motion.div>
-
                           <span
-                            className={`text-base xl:text-lg font-medium tracking-wide transition-colors duration-500 truncate ${isActive ? "text-white" : "text-gray-300"}`}
+                            className={`text-sm sm:text-base xl:text-lg font-medium tracking-wide transition-colors duration-500 truncate ${isActive ? "text-white" : "text-gray-300"}`}
                           >
                             {service.title}
                           </span>
@@ -345,34 +341,28 @@ export default function ServiceShowcase({
                           animate={{ rotate: arrowRotation }}
                           transition={{ duration: 0.2, ease: "easeOut" }}
                           className={`
-                            w-8 h-8 xl:w-10 xl:h-10 rounded-full flex items-center justify-center transition-colors duration-500 flex-shrink-0 ml-2 xl:ml-3
+                            w-6 h-6 sm:w-8 sm:h-8 xl:w-10 xl:h-10 rounded-full flex items-center justify-center transition-colors duration-500 flex-shrink-0 ml-2 sm:ml-3
                             ${isActive ? "bg-white text-[#2E6BFF]" : "bg-[#0f0f0f] text-gray-500 group-hover:bg-[#2a2a2a] group-hover:text-white"}
                           `}
                         >
                           <MoveRight
-                            size={16}
+                            size={14}
                             strokeWidth={2.5}
-                            className="xl:w-[18px] xl:h-[18px]"
+                            className="sm:w-4 sm:h-4 xl:w-[18px] xl:h-[18px]"
                           />
                         </motion.div>
                       </div>
                     </motion.button>
                   </motion.div>
-
-                  {/* Mobile/Tablet Image - Shows under each button when active */}
                   <MobileServiceImage service={service} />
                 </div>
               );
             })}
           </div>
 
-          {/* Right Column: Desktop Image Display - Hidden on mobile/tablet */}
           <motion.div
-            className="relative overflow-hidden bg-[#161616] w-full lg:flex-1 rounded-2xl md:rounded-3xl xl:rounded-[2rem] hidden lg:block"
-            style={{
-              aspectRatio: "16/12",
-              maxHeight: "600px",
-            }}
+            className="relative overflow-hidden bg-[#161616] w-full lg:flex-1 rounded-xl sm:rounded-2xl md:rounded-3xl xl:rounded-[2rem] hidden lg:block"
+            style={{ aspectRatio: "16/12", maxHeight: "600px" }}
             initial={{ opacity: 0, y: 60, scale: 0.95 }}
             animate={
               hasAnimated
@@ -398,21 +388,21 @@ export default function ServiceShowcase({
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
             <motion.div
-              className="absolute bottom-0 left-0 right-0 h-28 sm:h-32 md:h-36 xl:h-44 2xl:h-56 bg-gradient-to-t from-black/90 via-black/60 to-transparent backdrop-blur-[2px] xl:backdrop-blur-[3px]"
+              className="absolute bottom-0 left-0 right-0 h-24 sm:h-28 md:h-32 lg:h-36 xl:h-44 2xl:h-56 bg-gradient-to-t from-black/90 via-black/60 to-transparent backdrop-blur-[2px] xl:backdrop-blur-[3px]"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: smoothEase }}
               key={`overlay-${activeService.id}`}
             />
 
-            <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5 md:p-6 xl:p-8 2xl:p-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-3 sm:gap-0 z-10">
+            <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-5 lg:p-6 xl:p-8 2xl:p-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2 sm:gap-3 z-10">
               <div className="w-full sm:max-w-[70%] md:max-w-[75%] xl:max-w-[80%]">
                 <motion.h3
                   key={`title-${activeService.id}`}
                   initial={{ y: 30, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.4, ease: smoothEase }}
-                  className="text-xl sm:text-2xl md:text-3xl xl:text-4xl 2xl:text-5xl font-semibold text-white mb-1 sm:mb-2"
+                  className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-semibold text-white mb-1 sm:mb-2"
                 >
                   {activeService.title}
                 </motion.h3>
@@ -421,7 +411,7 @@ export default function ServiceShowcase({
                   initial={{ y: 30, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.4, delay: 0.1, ease: smoothEase }}
-                  className="text-sm sm:text-base xl:text-lg text-gray-300 leading-relaxed line-clamp-2 xl:line-clamp-3"
+                  className="text-xs sm:text-sm md:text-base xl:text-lg text-gray-300 leading-relaxed line-clamp-2 xl:line-clamp-3"
                 >
                   {activeService.description}
                 </motion.p>
@@ -437,10 +427,10 @@ export default function ServiceShowcase({
                   boxShadow: "0 20px 40px -10px rgba(46, 107, 255, 0.5)",
                 }}
                 whileTap={{ scale: 0.9 }}
-                className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 xl:w-14 xl:h-14 2xl:w-16 2xl:h-16 rounded-full bg-[#2E6BFF] hover:bg-[#1d5af5] flex items-center justify-center transition-colors duration-300 shadow-lg shadow-blue-900/40"
+                className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 2xl:w-16 2xl:h-16 rounded-full bg-[#2E6BFF] hover:bg-[#1d5af5] flex items-center justify-center transition-colors duration-300 shadow-lg shadow-blue-900/40"
               >
                 <ArrowUpRight
-                  className="text-white w-5 h-5 sm:w-6 sm:h-6 xl:w-7 xl:h-7 2xl:w-8 2xl:h-8"
+                  className="text-white w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 xl:w-7 xl:h-7 2xl:w-8 2xl:h-8"
                   strokeWidth={2.5}
                 />
               </motion.button>
