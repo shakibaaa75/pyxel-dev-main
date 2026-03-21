@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { blogPosts } from "../../data/BlogPost";
-import type { BlogPost } from "../../data/BlogPost";
 
 // Types
 interface FormData {
