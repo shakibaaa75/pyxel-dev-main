@@ -33,6 +33,7 @@ const HomePage = lazy(
 const AboutPage = lazy(() => import("./components/about/AboutPage"));
 const ServicesPage = lazy(() => import("./components/services/ServicesPage"));
 const BlogsPage = lazy(() => import("./components/blogs/BlogsPage"));
+const BlogSinglePage = lazy(() => import("./components/blogs/BlogSinglePage")); // ← NEW
 const FaqPage = lazy(() => import("./components/faq/FaqPage"));
 const ContactPage = lazy(() => import("./components/contact/ContactPage"));
 
@@ -54,6 +55,8 @@ const App = () => {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/blogs" element={<BlogsPage />} />
+            <Route path="/blogs/:slug" element={<BlogSinglePage />} />{" "}
+            {/* ← NEW */}
             <Route path="/faq" element={<FaqPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route

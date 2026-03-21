@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { Link } from "react-router-dom";
-import { blogPosts } from "../../../data/BlogPost"; // ← adjust path if needed
+import { Link } from "react-router-dom"; // ← NEW
+import { blogPosts } from "../../data/BlogPost"; // ← NEW
 
 function ArrowIcon({ className = "" }: { className?: string }) {
   return (
@@ -86,10 +86,10 @@ export default function BlogSection() {
             <span className="text-[#2979FF]">inspiration</span>
           </h2>
 
-          {/* View All → goes to /blogs page */}
+          {/* View All Button */}
           <Link
             to="/blogs"
-            className="flex items-center gap-2.5 bg-[#2979FF] text-white rounded-[10px] px-6 py-3.5 text-sm font-semibold whitespace-nowrap no-underline transition-all duration-200 hover:bg-[#1a65e0] hover:scale-105"
+            className="flex items-center gap-2.5 bg-[#2979FF] text-white border-none rounded-[10px] px-6 py-3.5 text-sm font-semibold cursor-pointer whitespace-nowrap transition-all duration-200 hover:bg-[#1a65e0] hover:scale-105 no-underline"
           >
             View All
             <ArrowIcon />
@@ -132,16 +132,16 @@ export default function BlogSection() {
               key={post.id}
               onMouseEnter={() => setHovered(post.id)}
               onMouseLeave={() => setHovered(null)}
-              className="cursor-pointer flex-none w-[calc(33.333%-20px)] min-w-[280px] md:min-w-[300px] lg:w-[calc(33.333%-20px)]"
+              className="flex-none w-[calc(33.333%-20px)] min-w-[280px] md:min-w-[300px]"
               style={{ scrollSnapAlign: "start" }}
             >
-              {/* Image — clicking goes to single post */}
+              {/* Image */}
               <Link to={`/blogs/${post.slug}`} className="block">
                 <div className="overflow-hidden rounded-t-[28.59px] mb-5 w-full h-[232px]">
                   <img
                     src={post.image}
                     alt={post.title}
-                    className="w-full h-full object-cover block transition-transform duration-500"
+                    className="w-full h-full object-cover block transition-transform duration-450"
                     style={{
                       transform:
                         hovered === post.id ? "scale(1.06)" : "scale(1)",
@@ -150,17 +150,15 @@ export default function BlogSection() {
                 </div>
               </Link>
 
-              {/* Title — clicking goes to single post */}
-              <Link to={`/blogs/${post.slug}`} className="no-underline block">
-                <h3
-                  className="text-[17px] font-bold mb-2.5 leading-[1.4] transition-colors duration-200"
-                  style={{
-                    color: hovered === post.id ? "#2979FF" : "#fff",
-                  }}
-                >
-                  {post.title}
-                </h3>
-              </Link>
+              {/* Title */}
+              <h3
+                className="text-[17px] font-bold mb-2.5 leading-[1.4] transition-colors duration-200"
+                style={{
+                  color: hovered === post.id ? "#2979FF" : "#fff",
+                }}
+              >
+                {post.title}
+              </h3>
 
               {/* Excerpt */}
               <p className="text-sm text-[#aaa] mb-5 leading-relaxed line-clamp-3">
@@ -170,7 +168,7 @@ export default function BlogSection() {
               {/* Divider */}
               <div className="h-px bg-white/10 mb-5 w-full" />
 
-              {/* Read More → single post */}
+              {/* Read More — now a Link */}
               <Link
                 to={`/blogs/${post.slug}`}
                 className="inline-flex items-center gap-2 text-[#2979FF] text-sm font-semibold no-underline transition-all duration-200 hover:gap-3"
