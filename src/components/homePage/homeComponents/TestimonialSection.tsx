@@ -156,7 +156,7 @@ const TestimonialSection: React.FC = () => {
       ref={sectionRef}
       className="w-full h-auto bg-[#161616] flex items-center justify-center py-8 sm:py-12 md:py-16 lg:py-20 font-sans relative overflow-hidden"
     >
-      <div className="bg-[#1c1c1c] bg-[url('./images/our-testimonial-bg.png')] bg-cover bg-center bg-no-repeat pt-6 sm:pt-8 md:pt-10 rounded-2xl sm:rounded-3xl w-full mx-2 sm:mx-4 md:mx-6 lg:mx-8">
+      <div className="bg-[#1c1c1c] bg-[url('/images/our-testimonial-bg.png')] bg-cover bg-center bg-no-repeat pt-6 sm:pt-8 md:pt-10 rounded-2xl sm:rounded-3xl w-full mx-2 sm:mx-4 md:mx-6 lg:mx-8">
         <div className="max-w-[1400px] mx-auto w-full px-3 sm:px-6 md:px-8 lg:px-12 xl:px-16 relative z-10">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-6 sm:mb-8 md:mb-10 lg:mb-12 xl:mb-16 gap-4 sm:gap-6 lg:gap-8">
             <div className="space-y-2 sm:space-y-3 lg:space-y-4 w-full lg:w-auto">
