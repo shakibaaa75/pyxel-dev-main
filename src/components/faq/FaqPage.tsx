@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 import Button, { ArrowRightIcon } from "../button";
+import { Mail, FileText, Layers, HelpCircle, X } from "lucide-react";
+import Breadcrumb from "../Breadcrumb/Breadcrumb";
 
 interface FAQItem {
   question: string;
@@ -48,7 +50,7 @@ const faqSections: FAQSection[] = [
     title: "Technical and design FAQs",
     items: [
       {
-        question: "What is your pricing structure?",
+        question: "What formats do you deliver designs in?",
         answer:
           "We deliver designs in a variety of formats depending on your needs, including vector files like AI, EPS, PDF, and web-friendly formats like PNG, JPEG, and SVG. For animations or videos, formats like MP4 or GIF are also provided.",
       },
@@ -65,12 +67,12 @@ const faqSections: FAQSection[] = [
       {
         question: "How do you manage projects to ensure timely delivery?",
         answer:
-          "We deliver designs in a variety of formats depending on your needs, including vector files like AI, EPS, PDF, and web-friendly formats like PNG, JPEG, and SVG. For animations or videos, formats like MP4 or GIF are also provided.",
+          "We use agile methodologies and project management tools like Asana and Notion to track progress, set milestones, and communicate with clients throughout the project lifecycle.",
       },
       {
-        question: "Are your designs responsive and mobile-friendly?",
+        question: "What is your revision process?",
         answer:
-          "Yes, we use agile methodologies and project management tools like Asana and Notion to track progress, set milestones, and communicate with clients throughout the project lifecycle.",
+          "We offer multiple rounds of revisions based on your package. Each revision round allows you to provide feedback and request changes until you're satisfied with the final result.",
       },
       {
         question: "Who will be my main point of contact?",
@@ -103,13 +105,114 @@ const faqSections: FAQSection[] = [
 ];
 
 const sidebarLinks = [
-  "General information FAQs",
-  "Technical and design FAQs",
-  "Project management FAQs",
-  "Client support FAQs",
+  {
+    label: "General information FAQs",
+    icon: <HelpCircle className="w-4 h-4" />,
+  },
+  { label: "Technical and design FAQs", icon: <Layers className="w-4 h-4" /> },
+  { label: "Project management FAQs", icon: <FileText className="w-4 h-4" /> },
+  { label: "Client support FAQs", icon: <Mail className="w-4 h-4" /> },
 ];
 
 const smoothEase: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
+
+// ─── Mobile Sidebar Drawer ────────────────────────────────────────────────────
+const MobileSidebarDrawer: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  onLinkClick: (link: string) => void;
+  hasAnimated: boolean;
+}> = ({ isOpen, onClose, onLinkClick, hasAnimated }) => {
+  return (
+    <>
+      {/* Overlay */}
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 lg:hidden"
+        />
+      )}
+
+      {/* Drawer */}
+      <motion.div
+        initial={{ x: "100%" }}
+        animate={{ x: isOpen ? 0 : "100%" }}
+        transition={{ duration: 0.3, ease: smoothEase }}
+        className="fixed right-0 top-0 h-full w-[280px] sm:w-[320px] bg-[#111111] z-50 lg:hidden shadow-2xl overflow-y-auto"
+      >
+        <div className="sticky top-0 bg-[#111111] z-10 px-4 py-4 border-b border-white/10 flex justify-between items-center">
+          <h3 className="text-white font-semibold text-base">Categories</h3>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"
+          >
+            <X className="w-4 h-4 text-white" />
+          </button>
+        </div>
+
+        <div className="p-4">
+          {/* Nav links - Portfolio style */}
+          <div className="rounded-2xl overflow-hidden border border-white/8">
+            <div className="bg-[#2E6BFF] px-4 py-3">
+              <h3 className="text-white font-semibold text-sm">Categories</h3>
+            </div>
+            <div className="px-4 py-3" style={{ background: "#1a1a1a" }}>
+              {sidebarLinks.map((link, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    onLinkClick(link.label);
+                    onClose();
+                  }}
+                  className="w-full text-left py-3 group"
+                >
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-gray-400 group-hover:text-[#2E6BFF] transition-colors">
+                      {link.icon}
+                    </span>
+                    <span className="text-white text-xs font-semibold group-hover:text-[#2E6BFF] transition-colors">
+                      {link.label}
+                    </span>
+                  </div>
+                  <div className="h-px bg-white/5 mt-3 group-last:hidden" />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Contact Card */}
+          <div
+            className="mt-5 rounded-2xl px-4 py-5 border border-white/8 flex flex-col items-center text-center gap-3"
+            style={{ background: "#1a1a1a" }}
+          >
+            <div className="w-12 h-12 rounded-full bg-[#2E6BFF]/15 flex items-center justify-center">
+              <div className="relative">
+                <Mail className="w-5 h-5 text-[#2E6BFF]" />
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-[#1a1a1a]" />
+              </div>
+            </div>
+            <p className="text-gray-400 text-xs leading-relaxed">
+              We are always available to discuss with you
+            </p>
+            <p className="text-white text-xs font-medium">info@domain.com</p>
+            <button
+              onClick={() => {
+                onLinkClick("");
+                setTimeout(() => (window.location.href = "/contact"), 100);
+              }}
+              className="flex items-center gap-2 bg-[#2E6BFF] hover:bg-[#1e5fcc] transition-colors text-white text-xs font-semibold px-5 py-2.5 rounded-full"
+            >
+              Contact Us <ArrowRightIcon className="w-3 h-3" />
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </>
+  );
+};
 
 function AccordionItem({
   item,
@@ -132,17 +235,17 @@ function AccordionItem({
         ease: smoothEase,
       }}
       className={`border rounded-xl mb-3 transition-all duration-300 cursor-pointer select-none ${
-        open ? "border-gray-600 bg-[#1a1a1a]" : "border-gray-700 bg-[#161616]"
+        open ? "border-gray-600 bg-[#1a1a1a]" : "border-white/8 bg-[#161616]"
       }`}
       onClick={() => setOpen(!open)}
     >
-      <div className="flex items-center justify-between px-5 py-4">
-        <span className="text-white font-semibold text-[15px] leading-snug">
+      <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4">
+        <span className="text-white font-semibold text-[14px] sm:text-[15px] leading-snug pr-4">
           {item.question}
         </span>
         <motion.span
           animate={{ rotate: open ? 0 : 0 }}
-          className={`ml-4 flex-shrink-0 text-blue-500 text-xl font-light transition-transform duration-300`}
+          className={`flex-shrink-0 text-[#2E6BFF] text-xl font-light transition-transform duration-300`}
         >
           {open ? (
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -152,7 +255,7 @@ function AccordionItem({
                 width="14"
                 height="1.5"
                 rx="0.75"
-                fill="#3B82F6"
+                fill="#2E6BFF"
               />
             </svg>
           ) : (
@@ -163,7 +266,7 @@ function AccordionItem({
                 width="14"
                 height="1.5"
                 rx="0.75"
-                fill="#3B82F6"
+                fill="#2E6BFF"
               />
               <rect
                 x="9.25"
@@ -171,7 +274,7 @@ function AccordionItem({
                 width="1.5"
                 height="14"
                 rx="0.75"
-                fill="#3B82F6"
+                fill="#2E6BFF"
               />
             </svg>
           )}
@@ -189,8 +292,10 @@ function AccordionItem({
         }}
         className="overflow-hidden"
       >
-        <div className="px-5 pb-5">
-          <p className="text-gray-400 text-sm leading-relaxed">{item.answer}</p>
+        <div className="px-4 sm:px-5 pb-4 sm:pb-5">
+          <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
+            {item.answer}
+          </p>
         </div>
       </motion.div>
     </motion.div>
@@ -199,9 +304,9 @@ function AccordionItem({
 
 export default function FAQPage() {
   const navigate = useNavigate();
-  const [headerHeight, setHeaderHeight] = useState(0);
   const [hasAnimated, setHasAnimated] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.15 });
 
@@ -212,42 +317,6 @@ export default function FAQPage() {
     }
   }, [isInView, hasAnimated]);
 
-  useEffect(() => {
-    const calculateHeaderHeight = () => {
-      const header =
-        document.querySelector("header") ||
-        document.querySelector(".header") ||
-        document.querySelector("nav");
-      if (header) {
-        setHeaderHeight(header.clientHeight);
-      } else {
-        setHeaderHeight(96);
-      }
-    };
-
-    calculateHeaderHeight();
-    window.addEventListener("resize", calculateHeaderHeight);
-
-    return () => window.removeEventListener("resize", calculateHeaderHeight);
-  }, []);
-
-  const renderAnimatedText = (text: string, baseDelay = 0) => {
-    return text.split("").map((letter, index) => {
-      const delay = baseDelay + index * 0.01;
-      return (
-        <span
-          key={index}
-          className={`inline-block transition-all duration-200 ease-out ${
-            isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
-          style={{ transitionDelay: `${delay}s` }}
-        >
-          {letter === " " ? "\u00A0" : letter}
-        </span>
-      );
-    });
-  };
-
   const breadcrumbItems = [
     { label: "Home", path: "/", isLast: false },
     { label: "FAQs", path: "/faqs", isLast: true },
@@ -257,225 +326,154 @@ export default function FAQPage() {
     navigate("/contact");
   };
 
+  const handleSidebarLinkClick = (link: string) => {
+    const element = document.getElementById(
+      link.toLowerCase().replace(/\s+/g, "-"),
+    );
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div
       ref={sectionRef}
       className="min-h-screen bg-[#111111] font-['Montserrat']"
     >
-      {/* Hero Header - with animations */}
-      <div className="pt-24 pb-0 px-4 sm:px-8 lg:px-16">
-        <div className="max-w-[1400px] mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.6, ease: smoothEase }}
-            className="bg-[#1e1e1e] rounded-[20px] p-8 sm:p-10 mb-8"
-          >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-              <span className="text-white block sm:inline">
-                {renderAnimatedText("Frequently Asked ", 0.2)}
-              </span>
-              <span className="text-[#2979FF] block sm:inline">
-                {renderAnimatedText(
-                  "Questions",
-                  0.2 + "Frequently Asked ".length * 0.01,
-                )}
-              </span>
+      {/* Mobile Sidebar Drawer */}
+      <MobileSidebarDrawer
+        isOpen={isMobileDrawerOpen}
+        onClose={() => setIsMobileDrawerOpen(false)}
+        onLinkClick={handleSidebarLinkClick}
+        hasAnimated={hasAnimated}
+      />
+
+      {/* Hero Header - Matching BlogSinglePage Design */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-8 sm:pt-10 pb-12 sm:pb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6, ease: smoothEase }}
+          className="bg-[#1e1e1e] rounded-[20px] p-6 sm:p-8 md:p-10 mb-6 sm:mb-8"
+        >
+          <div className="space-y-3 sm:space-y-4">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight">
+              <span className="text-white">Frequently Asked </span>
+              <span className="text-[#2E6BFF]">Questions</span>
             </h1>
-            {/* Dynamic Breadcrumb with animation */}
+
+            {/* Dynamic Breadcrumb - using Breadcrumb component */}
             <div className="mt-2">
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                {breadcrumbItems.map((item, index) => (
-                  <React.Fragment key={item.label}>
-                    {index > 0 && (
-                      <span
-                        className={`transition-all duration-200 ${
-                          isLoaded
-                            ? "opacity-100 translate-y-0"
-                            : "opacity-0 translate-y-4"
-                        }`}
-                        style={{ transitionDelay: `${0.4 + index * 0.05}s` }}
-                      >
-                        /
-                      </span>
-                    )}
-                    <span
-                      className={`hover:text-white transition-colors cursor-pointer transition-all duration-200 ${
-                        isLoaded
-                          ? "opacity-100 translate-y-0"
-                          : "opacity-0 translate-y-4"
-                      }`}
-                      style={{ transitionDelay: `${0.4 + index * 0.05}s` }}
-                    >
-                      {item.label}
-                    </span>
-                  </React.Fragment>
-                ))}
-              </div>
+              <Breadcrumb customItems={breadcrumbItems} />
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </div>
 
       {/* Body */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-16 pb-20">
-        <div className="flex flex-col md:flex-row gap-8">
-          {/* Sidebar - with animation */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 pb-16 sm:pb-20">
+        <div className="flex flex-col lg:flex-row gap-6 md:gap-8 lg:gap-10">
+          {/* Mobile Categories Button */}
+          <div className="lg:hidden mb-4">
+            <button
+              onClick={() => setIsMobileDrawerOpen(true)}
+              className="w-full flex items-center justify-between gap-2 bg-[#1e1e1e] rounded-xl px-4 py-3 border border-white/10"
+            >
+              <div className="flex items-center gap-2">
+                <HelpCircle className="w-4 h-4 text-[#2E6BFF]" />
+                <span className="text-white text-sm font-medium">
+                  Categories
+                </span>
+              </div>
+              <ArrowRightIcon className="w-4 h-4 text-gray-400" />
+            </button>
+          </div>
+
+          {/* Sidebar - Desktop (Portfolio Style) */}
           <motion.aside
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -24 }}
             animate={
-              hasAnimated ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }
+              hasAnimated ? { opacity: 1, x: 0 } : { opacity: 0, x: -24 }
             }
-            transition={{
-              duration: 0.6,
-              delay: 0.2,
-              ease: smoothEase,
-            }}
-            className="w-full md:w-72 flex-shrink-0 md:sticky md:self-start"
-            style={{
-              top: `${headerHeight + 20}px`,
-              maxHeight: `calc(100vh - ${headerHeight + 40}px)`,
-              overflowY: "auto",
-              scrollbarWidth: "thin",
-              paddingRight: "10px",
-            }}
+            transition={{ duration: 0.6, delay: 0.2, ease: smoothEase }}
+            className="hidden lg:block w-full lg:w-[280px] xl:w-[300px] flex-shrink-0"
           >
-            <div className="space-y-6">
-              {/* Nav links */}
-              <div className="bg-[#1a1a1a] rounded-2xl overflow-hidden border border-gray-800">
-                <div className="p-4 border-b border-gray-800 bg-[#1e1e1e]">
+            <div className="space-y-5">
+              {/* Categories Card - Portfolio Style */}
+              <div className="rounded-2xl overflow-hidden border border-white/8">
+                <div className="bg-[#2E6BFF] px-5 py-3">
                   <h3 className="text-white font-semibold text-sm">
                     Categories
                   </h3>
                 </div>
-                {sidebarLinks.map((link, i) => (
-                  <motion.a
-                    key={i}
-                    href={`#${link.toLowerCase().replace(/\s+/g, "-")}`}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={
-                      hasAnimated
-                        ? { opacity: 1, x: 0 }
-                        : { opacity: 0, x: -20 }
-                    }
-                    transition={{
-                      duration: 0.4,
-                      delay: hasAnimated ? 0.3 + i * 0.05 : 0,
-                      ease: smoothEase,
-                    }}
-                    className="flex items-center justify-between px-5 py-3.5 border-b border-gray-800 last:border-b-0 cursor-pointer group hover:bg-[#1f1f1f] transition-colors"
-                  >
-                    <span className="text-gray-400 text-sm group-hover:text-white transition-colors">
-                      {link}
-                    </span>
-                    <svg
-                      className="text-[#2979FF] opacity-0 group-hover:opacity-100 transition-opacity"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      fill="none"
-                    >
-                      <path
-                        d="M3 8h10M9 4l4 4-4 4"
-                        stroke="#2979FF"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </motion.a>
-                ))}
+                <div className="px-5 py-4" style={{ background: "#1a1a1a" }}>
+                  {sidebarLinks.map((link, i) => (
+                    <div key={i}>
+                      <button
+                        onClick={() => handleSidebarLinkClick(link.label)}
+                        className="w-full text-left py-3 group"
+                      >
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <span className="text-gray-400 group-hover:text-[#2E6BFF] transition-colors">
+                            {link.icon}
+                          </span>
+                          <span className="text-white text-xs font-semibold group-hover:text-[#2E6BFF] transition-colors">
+                            {link.label}
+                          </span>
+                        </div>
+                      </button>
+                      {i < sidebarLinks.length - 1 && (
+                        <div className="h-px bg-white/5" />
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              {/* Contact card with animation */}
+              {/* Contact Card - Portfolio Style */}
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={
-                  hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
+                  hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
                 }
-                transition={{
-                  duration: 0.6,
-                  delay: 0.4,
-                  ease: smoothEase,
-                }}
-                className="bg-[#1a1a1a] border border-gray-800 rounded-2xl p-6 flex flex-col items-center text-center"
+                transition={{ duration: 0.5, delay: 0.3, ease: smoothEase }}
+                className="rounded-2xl px-5 py-6 border border-white/8 flex flex-col items-center text-center gap-3"
+                style={{ background: "#1a1a1a" }}
               >
                 <motion.div
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={
-                    hasAnimated
-                      ? { scale: 1, opacity: 1 }
-                      : { scale: 0, opacity: 0 }
-                  }
-                  transition={{
-                    duration: 0.5,
-                    delay: 0.5,
-                    ease: smoothEase,
-                  }}
-                  className="mb-4"
+                  initial={{ scale: 0 }}
+                  animate={hasAnimated ? { scale: 1 } : { scale: 0 }}
+                  transition={{ duration: 0.4, delay: 0.4, ease: smoothEase }}
+                  className="w-12 h-12 rounded-full bg-[#2E6BFF]/15 flex items-center justify-center"
                 >
-                  <div className="w-14 h-14 bg-[#2979FF] rounded-xl flex items-center justify-center relative">
-                    <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
-                      <rect
-                        x="2"
-                        y="2"
-                        width="24"
-                        height="18"
-                        rx="3"
-                        fill="white"
-                        fillOpacity="0.2"
-                      />
-                      <path
-                        d="M4 4l10 8 10-8"
-                        stroke="white"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                    <motion.div
+                  <div className="relative">
+                    <Mail className="w-5 h-5 text-[#2E6BFF]" />
+                    <motion.span
                       initial={{ scale: 0 }}
                       animate={hasAnimated ? { scale: 1 } : { scale: 0 }}
-                      transition={{
-                        duration: 0.3,
-                        delay: 0.7,
-                        ease: smoothEase,
-                      }}
-                      className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center border-2 border-[#1a1a1a]"
-                    >
-                      <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                        <path
-                          d="M1 4l3 3 5-6"
-                          stroke="white"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </motion.div>
+                      transition={{ duration: 0.3, delay: 0.5 }}
+                      className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-[#1a1a1a]"
+                    />
                   </div>
                 </motion.div>
-                <p className="text-gray-400 text-xs mb-2 leading-snug">
-                  We always available to discuss with you
+                <p className="text-gray-400 text-xs leading-relaxed">
+                  We are always available to discuss with you
                 </p>
-                <p className="text-gray-300 text-sm font-medium mb-5">
+                <p className="text-white text-xs font-medium">
                   info@domain.com
                 </p>
-
-                <Button
-                  size="small"
-                  variant="primary"
+                <button
                   onClick={handleContactClick}
-                  className="w-full justify-center cursor-pointer"
+                  className="flex items-center gap-2 bg-[#2E6BFF] hover:bg-[#1e5fcc] transition-colors text-white text-xs font-semibold px-5 py-2.5 rounded-full"
                 >
-                  Contact Us
-                  <ArrowRightIcon className="h-4 w-4 sm:h-5 sm:w-5" />
-                </Button>
+                  Contact Us <ArrowRightIcon className="w-3 h-3" />
+                </button>
               </motion.div>
             </div>
           </motion.aside>
 
           {/* Main content */}
-          <main className="flex-1">
+          <main className="flex-1 min-w-0">
             {faqSections.map((section, si) => (
               <motion.div
                 key={si}
@@ -489,9 +487,9 @@ export default function FAQPage() {
                   delay: hasAnimated ? si * 0.1 + 0.2 : 0,
                   ease: smoothEase,
                 }}
-                className="mb-10 scroll-mt-24"
+                className="mb-8 sm:mb-10 scroll-mt-20"
               >
-                <h2 className="text-white text-2xl font-bold mb-5 pb-2 border-b border-gray-800">
+                <h2 className="text-white text-xl sm:text-2xl font-bold mb-4 sm:mb-5 pb-2 border-b border-gray-800">
                   {section.title}
                 </h2>
                 {section.items.map((item, ii) => (
@@ -509,22 +507,6 @@ export default function FAQPage() {
       </div>
 
       <style>{`
-        @media (min-width: 768px) {
-          aside::-webkit-scrollbar {
-            width: 4px;
-          }
-
-          aside::-webkit-scrollbar-track {
-            background: #2a2a2a;
-            border-radius: 10px;
-          }
-
-          aside::-webkit-scrollbar-thumb {
-            background: #2979ff;
-            border-radius: 10px;
-          }
-        }
-        
         /* Animation classes */
         .opacity-0 {
           opacity: 0;
@@ -540,10 +522,6 @@ export default function FAQPage() {
         
         .translate-y-4 {
           transform: translateY(1rem);
-        }
-        
-        .translate-y-8 {
-          transform: translateY(2rem);
         }
       `}</style>
     </div>

@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
 import { blogPosts } from "../../data/BlogPost";
+import Breadcrumb from "../Breadcrumb/Breadcrumb";
 
 function ArrowIcon({ className = "" }: { className?: string }) {
   return (
@@ -170,23 +171,6 @@ export default function BlogsPage() {
     }
   }, [isInView, hasAnimated]);
 
-  const renderAnimatedText = (text: string, baseDelay = 0) => {
-    return text.split("").map((letter, index) => {
-      const delay = baseDelay + index * 0.01;
-      return (
-        <span
-          key={index}
-          className={`inline-block transition-all duration-200 ease-out ${
-            isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
-          style={{ transitionDelay: `${delay}s` }}
-        >
-          {letter === " " ? "\u00A0" : letter}
-        </span>
-      );
-    });
-  };
-
   // Custom breadcrumb items for blogs page
   const breadcrumbItems = [
     { label: "Home", path: "/", isLast: false },
@@ -194,59 +178,26 @@ export default function BlogsPage() {
   ];
 
   return (
-    <section
+    <div
       ref={sectionRef}
-      className="relative w-full bg-[#111111] min-h-screen font-['Montserrat'] overflow-x-hidden py-12 sm:py-16 lg:py-20"
+      className="relative w-full bg-[#111111] min-h-screen font-['Montserrat'] overflow-x-hidden"
     >
-      <div className="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
-        {/* Header Section with animated text like TeamSection */}
+      <div className="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10 pt-8 sm:pt-10 pb-12 sm:pb-16">
+        {/* Header Section - Now matching BlogSinglePage design */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6, ease: smoothEase }}
-          className="mb-8 sm:mb-10 lg:mb-12"
+          className="bg-[#1e1e1e] rounded-[20px] p-6 sm:p-8 lg:p-10 mb-6 sm:mb-8"
         >
-          <div className="bg-[#1a1b1f] rounded-2xl p-7 md:p-[28px_36px_24px_36px] w-full box-border">
-            {/* Main Heading with letter-by-letter animation */}
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight tracking-tight">
-              <span className="text-white block sm:inline">
-                {renderAnimatedText("Latest ", 0.2)}
-              </span>
-              <span className="text-[#2A7DFF] block sm:inline">
-                {renderAnimatedText("blog", 0.2 + "Latest ".length * 0.01)}
-              </span>
-            </h2>
-
-            {/* Breadcrumb with staggered animation */}
-            <div className="flex items-center gap-2 mt-3 text-sm text-gray-400">
-              {breadcrumbItems.map((item, index) => (
-                <React.Fragment key={item.label}>
-                  {index > 0 && (
-                    <span
-                      className={`transition-all duration-200 ${
-                        isLoaded
-                          ? "opacity-100 translate-y-0"
-                          : "opacity-0 translate-y-4"
-                      }`}
-                      style={{ transitionDelay: `${0.4 + index * 0.05}s` }}
-                    >
-                      /
-                    </span>
-                  )}
-                  <Link
-                    to={item.path}
-                    className={`hover:text-white transition-colors cursor-pointer transition-all duration-200 ${
-                      isLoaded
-                        ? "opacity-100 translate-y-0"
-                        : "opacity-0 translate-y-4"
-                    }`}
-                    style={{ transitionDelay: `${0.4 + index * 0.05}s` }}
-                  >
-                    {item.label}
-                  </Link>
-                </React.Fragment>
-              ))}
-            </div>
+          {/* Main Heading */}
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4 leading-tight">
+            <span className="text-white">Latest </span>
+            <span className="text-[#2A7DFF]">blog</span>
+          </h1>
+          {/* Breadcrumb under title - same as BlogSinglePage */}
+          <div className="mt-2">
+            <Breadcrumb customItems={breadcrumbItems} />
           </div>
         </motion.div>
 
@@ -301,6 +252,6 @@ export default function BlogsPage() {
           transform: translateY(1rem);
         }
       `}</style>
-    </section>
+    </div>
   );
 }

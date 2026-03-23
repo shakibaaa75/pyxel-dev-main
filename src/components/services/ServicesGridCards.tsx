@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { services } from "../../data/Servicesdata";
 import type { Service } from "../../data/Servicesdata";
+import Breadcrumb from "../Breadcrumb/Breadcrumb";
 
 const smoothEase: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
@@ -119,85 +120,31 @@ export default function ServicesGridCards() {
     { label: "Services", path: "/services", isLast: true },
   ];
 
-  const renderAnimatedText = (text: string, baseDelay = 0) => {
-    return text.split("").map((letter, index) => {
-      const delay = baseDelay + index * 0.01;
-      return (
-        <span
-          key={index}
-          className={`inline-block transition-all duration-200 ease-out ${
-            isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
-          style={{ transitionDelay: `${delay}s` }}
-        >
-          {letter === " " ? "\u00A0" : letter}
-        </span>
-      );
-    });
-  };
-
   return (
     <div
       ref={sectionRef}
       className="min-h-screen bg-[#111111] font-['Montserrat'] overflow-x-hidden"
     >
-      {/* Hero Header - Matching Team Section Design */}
-      <div className="pt-24 pb-0 px-4 sm:px-8 lg:px-16">
-        <div className="max-w-[1300px] mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-            transition={{ duration: 0.6, ease: smoothEase }}
-            className="bg-[#1e1e1e] rounded-[20px] p-8 sm:p-10 mb-8"
-          >
-            {/* Main Heading with letter-by-letter animation */}
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight tracking-tight">
-              <span className="text-white block sm:inline">
-                {renderAnimatedText("Explore our ", 0.2)}
-              </span>
-              <span className="text-[#2979FF] block sm:inline">
-                {renderAnimatedText(
-                  "services",
-                  0.2 + "Explore our ".length * 0.01,
-                )}
-              </span>
-            </h2>
+      {/* Hero Header - Matching BlogSinglePage Design */}
+      <div className="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-8 sm:pt-10 pb-12 sm:pb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.6, ease: smoothEase }}
+          className="bg-[#1e1e1e] rounded-[20px] p-6 sm:p-8 lg:p-10 mb-6 sm:mb-8"
+        >
+          {/* Main Heading */}
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4 leading-tight">
+            <span className="text-white">Explore our </span>
+            <span className="text-[#2979FF]">services</span>
+          </h1>
+          {/* Breadcrumb under title - same as BlogSinglePage */}
+          <div className="mt-2">
+            <Breadcrumb customItems={breadcrumbItems} />
+          </div>
+        </motion.div>
 
-            {/* Breadcrumb with staggered animation */}
-            <div className="flex items-center gap-2 mt-3 text-sm text-gray-400">
-              {breadcrumbItems.map((item, index) => (
-                <React.Fragment key={item.label}>
-                  {index > 0 && (
-                    <span
-                      className={`transition-all duration-200 ${
-                        isLoaded
-                          ? "opacity-100 translate-y-0"
-                          : "opacity-0 translate-y-4"
-                      }`}
-                      style={{ transitionDelay: `${0.4 + index * 0.05}s` }}
-                    >
-                      /
-                    </span>
-                  )}
-                  <span
-                    className={`hover:text-white transition-colors cursor-pointer transition-all duration-200 ${
-                      isLoaded
-                        ? "opacity-100 translate-y-0"
-                        : "opacity-0 translate-y-4"
-                    }`}
-                    style={{ transitionDelay: `${0.4 + index * 0.05}s` }}
-                  >
-                    {item.label}
-                  </span>
-                </React.Fragment>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Grid */}
-      <div className="max-w-[1300px] mx-auto px-4 sm:px-8 lg:px-16 pb-20">
+        {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service, index) => (
             <ServiceCard
