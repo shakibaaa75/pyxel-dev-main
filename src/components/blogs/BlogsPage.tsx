@@ -86,7 +86,7 @@ function BlogCard({
             }}
             loading="lazy"
             onLoad={() => setImageLoaded(true)}
-            onError={(e) => {
+            onError={() => {
               console.error("Image failed to load:", post.image);
               setImageLoaded(true);
             }}
