@@ -36,7 +36,7 @@ const Header: React.FC = () => {
           <div className="flex-shrink-0">
             <Link to="/">
               <img
-                src="images/Layer 2.png"
+                src="/images/Layer 2.png"
                 alt="PYXEL DEVELOPMENT"
                 className="h-10 w-auto sm:h-12"
               />

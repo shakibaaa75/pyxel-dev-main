@@ -23,14 +23,19 @@ export default function Breadcrumb({
   // Generate breadcrumb items from the current path
   const generateItemsFromPath = (): BreadcrumbItem[] => {
     const pathnames = location.pathname.split("/").filter((x) => x);
+    const items: BreadcrumbItem[] = [];
 
-    const items: BreadcrumbItem[] = [
-      { label: homeLabel, path: "/", isLast: pathnames.length === 0 },
-    ];
+    // Add Home
+    items.push({
+      label: homeLabel,
+      path: "/",
+      isLast: pathnames.length === 0,
+    });
 
-    let currentPath = "";
+    // Build path progressively
+    let accumulatedPath = "";
     pathnames.forEach((name, index) => {
-      currentPath += `/${name}`;
+      accumulatedPath += `/${name}`;
       const isLast = index === pathnames.length - 1;
 
       // Format the label (capitalize and replace hyphens)
@@ -39,7 +44,7 @@ export default function Breadcrumb({
 
       items.push({
         label,
-        path: currentPath,
+        path: accumulatedPath,
         isLast,
       });
     });
@@ -53,7 +58,7 @@ export default function Breadcrumb({
     <nav className="flex items-center flex-wrap" aria-label="Breadcrumb">
       <ol className="flex items-center flex-wrap gap-1">
         {items.map((item, index) => (
-          <li key={item.path} className="flex items-center">
+          <li key={item.path + index} className="flex items-center">
             {index > 0 && (
               <span className="text-gray-500 mx-1 text-sm">{separator}</span>
             )}

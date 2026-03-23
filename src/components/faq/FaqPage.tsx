@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Breadcrumb from "../Breadcrumb/Breadcrumb";
+import { motion, useInView } from "framer-motion";
 import Button, { ArrowRightIcon } from "../button";
 
 interface FAQItem {
@@ -103,17 +103,34 @@ const faqSections: FAQSection[] = [
 ];
 
 const sidebarLinks = [
-  "General Information FAQs",
+  "General information FAQs",
   "Technical and design FAQs",
   "Project management FAQs",
   "Client support FAQs",
 ];
 
-function AccordionItem({ item }: { item: FAQItem }) {
+const smoothEase: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
+
+function AccordionItem({
+  item,
+  index,
+  hasAnimated,
+}: {
+  item: FAQItem;
+  index: number;
+  hasAnimated: boolean;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+      transition={{
+        duration: 0.5,
+        delay: hasAnimated ? index * 0.05 + 0.2 : 0,
+        ease: smoothEase,
+      }}
       className={`border rounded-xl mb-3 transition-all duration-300 cursor-pointer select-none ${
         open ? "border-gray-600 bg-[#1a1a1a]" : "border-gray-700 bg-[#161616]"
       }`}
@@ -123,7 +140,8 @@ function AccordionItem({ item }: { item: FAQItem }) {
         <span className="text-white font-semibold text-[15px] leading-snug">
           {item.question}
         </span>
-        <span
+        <motion.span
+          animate={{ rotate: open ? 0 : 0 }}
           className={`ml-4 flex-shrink-0 text-blue-500 text-xl font-light transition-transform duration-300`}
         >
           {open ? (
@@ -157,24 +175,45 @@ function AccordionItem({ item }: { item: FAQItem }) {
               />
             </svg>
           )}
-        </span>
+        </motion.span>
       </div>
-      {open && (
+      <motion.div
+        initial={false}
+        animate={{
+          height: open ? "auto" : 0,
+          opacity: open ? 1 : 0,
+        }}
+        transition={{
+          duration: 0.3,
+          ease: "easeInOut",
+        }}
+        className="overflow-hidden"
+      >
         <div className="px-5 pb-5">
           <p className="text-gray-400 text-sm leading-relaxed">{item.answer}</p>
         </div>
-      )}
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
 export default function FAQPage() {
   const navigate = useNavigate();
   const [headerHeight, setHeaderHeight] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { once: true, amount: 0.15 });
+
+  useEffect(() => {
+    if (isInView && !hasAnimated) {
+      setHasAnimated(true);
+      setIsLoaded(true);
+    }
+  }, [isInView, hasAnimated]);
 
   useEffect(() => {
     const calculateHeaderHeight = () => {
-      // Find the actual header element (adjust selector as needed)
       const header =
         document.querySelector("header") ||
         document.querySelector(".header") ||
@@ -182,8 +221,7 @@ export default function FAQPage() {
       if (header) {
         setHeaderHeight(header.clientHeight);
       } else {
-        // Default fallback - adjust based on your actual header height
-        setHeaderHeight(96); // 96px for pt-24 (24 = 96px)
+        setHeaderHeight(96);
       }
     };
 
@@ -193,39 +231,106 @@ export default function FAQPage() {
     return () => window.removeEventListener("resize", calculateHeaderHeight);
   }, []);
 
-  // Custom breadcrumb items for FAQ page
+  const renderAnimatedText = (text: string, baseDelay = 0) => {
+    return text.split("").map((letter, index) => {
+      const delay = baseDelay + index * 0.01;
+      return (
+        <span
+          key={index}
+          className={`inline-block transition-all duration-200 ease-out ${
+            isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+          }`}
+          style={{ transitionDelay: `${delay}s` }}
+        >
+          {letter === " " ? "\u00A0" : letter}
+        </span>
+      );
+    });
+  };
+
   const breadcrumbItems = [
     { label: "Home", path: "/", isLast: false },
     { label: "FAQs", path: "/faqs", isLast: true },
   ];
 
   const handleContactClick = () => {
-    // Navigate to contact page
     navigate("/contact");
   };
 
   return (
-    <div className="min-h-screen bg-[#111111] font-['Montserrat']">
-      {/* Hero Header - Matching Blog Page Design */}
+    <div
+      ref={sectionRef}
+      className="min-h-screen bg-[#111111] font-['Montserrat']"
+    >
+      {/* Hero Header - with animations */}
       <div className="pt-24 pb-0 px-4 sm:px-8 lg:px-16">
-        <div className="max-w-[1300px] mx-auto">
-          <div className="bg-[#1e1e1e] rounded-[20px] p-8 sm:p-10 mb-8">
+        <div className="max-w-[1400px] mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            transition={{ duration: 0.6, ease: smoothEase }}
+            className="bg-[#1e1e1e] rounded-[20px] p-8 sm:p-10 mb-8"
+          >
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-              Frequently Asked <span className="text-[#2979FF]">Questions</span>
+              <span className="text-white block sm:inline">
+                {renderAnimatedText("Frequently Asked ", 0.2)}
+              </span>
+              <span className="text-[#2979FF] block sm:inline">
+                {renderAnimatedText(
+                  "Questions",
+                  0.2 + "Frequently Asked ".length * 0.01,
+                )}
+              </span>
             </h1>
-            {/* Dynamic Breadcrumb */}
+            {/* Dynamic Breadcrumb with animation */}
             <div className="mt-2">
-              <Breadcrumb customItems={breadcrumbItems} />
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                {breadcrumbItems.map((item, index) => (
+                  <React.Fragment key={item.label}>
+                    {index > 0 && (
+                      <span
+                        className={`transition-all duration-200 ${
+                          isLoaded
+                            ? "opacity-100 translate-y-0"
+                            : "opacity-0 translate-y-4"
+                        }`}
+                        style={{ transitionDelay: `${0.4 + index * 0.05}s` }}
+                      >
+                        /
+                      </span>
+                    )}
+                    <span
+                      className={`hover:text-white transition-colors cursor-pointer transition-all duration-200 ${
+                        isLoaded
+                          ? "opacity-100 translate-y-0"
+                          : "opacity-0 translate-y-4"
+                      }`}
+                      style={{ transitionDelay: `${0.4 + index * 0.05}s` }}
+                    >
+                      {item.label}
+                    </span>
+                  </React.Fragment>
+                ))}
+              </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
       {/* Body */}
-      <div className="max-w-[1300px] mx-auto px-4 sm:px-8 lg:px-16 pb-20">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-8 lg:px-16 pb-20">
         <div className="flex flex-col md:flex-row gap-8">
-          {/* Sidebar - Sticky only on desktop */}
-          <aside
+          {/* Sidebar - with animation */}
+          <motion.aside
+            initial={{ opacity: 0, x: -30 }}
+            animate={
+              hasAnimated ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }
+            }
+            transition={{
+              duration: 0.6,
+              delay: 0.2,
+              ease: smoothEase,
+            }}
             className="w-full md:w-72 flex-shrink-0 md:sticky md:self-start"
             style={{
               top: `${headerHeight + 20}px`,
@@ -244,9 +349,20 @@ export default function FAQPage() {
                   </h3>
                 </div>
                 {sidebarLinks.map((link, i) => (
-                  <a
+                  <motion.a
                     key={i}
                     href={`#${link.toLowerCase().replace(/\s+/g, "-")}`}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={
+                      hasAnimated
+                        ? { opacity: 1, x: 0 }
+                        : { opacity: 0, x: -20 }
+                    }
+                    transition={{
+                      duration: 0.4,
+                      delay: hasAnimated ? 0.3 + i * 0.05 : 0,
+                      ease: smoothEase,
+                    }}
                     className="flex items-center justify-between px-5 py-3.5 border-b border-gray-800 last:border-b-0 cursor-pointer group hover:bg-[#1f1f1f] transition-colors"
                   >
                     <span className="text-gray-400 text-sm group-hover:text-white transition-colors">
@@ -267,14 +383,37 @@ export default function FAQPage() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                  </a>
+                  </motion.a>
                 ))}
               </div>
 
-              {/* Contact card with Button component */}
-              <div className="bg-[#1a1a1a] border border-gray-800 rounded-2xl p-6 flex flex-col items-center text-center">
-                {/* Email icon */}
-                <div className="mb-4">
+              {/* Contact card with animation */}
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={
+                  hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
+                }
+                transition={{
+                  duration: 0.6,
+                  delay: 0.4,
+                  ease: smoothEase,
+                }}
+                className="bg-[#1a1a1a] border border-gray-800 rounded-2xl p-6 flex flex-col items-center text-center"
+              >
+                <motion.div
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={
+                    hasAnimated
+                      ? { scale: 1, opacity: 1 }
+                      : { scale: 0, opacity: 0 }
+                  }
+                  transition={{
+                    duration: 0.5,
+                    delay: 0.5,
+                    ease: smoothEase,
+                  }}
+                  className="mb-4"
+                >
                   <div className="w-14 h-14 bg-[#2979FF] rounded-xl flex items-center justify-center relative">
                     <svg width="28" height="22" viewBox="0 0 28 22" fill="none">
                       <rect
@@ -293,8 +432,16 @@ export default function FAQPage() {
                         strokeLinecap="round"
                       />
                     </svg>
-                    {/* Green check badge */}
-                    <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center border-2 border-[#1a1a1a]">
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={hasAnimated ? { scale: 1 } : { scale: 0 }}
+                      transition={{
+                        duration: 0.3,
+                        delay: 0.7,
+                        ease: smoothEase,
+                      }}
+                      className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center border-2 border-[#1a1a1a]"
+                    >
                       <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
                         <path
                           d="M1 4l3 3 5-6"
@@ -304,9 +451,9 @@ export default function FAQPage() {
                           strokeLinejoin="round"
                         />
                       </svg>
-                    </div>
+                    </motion.div>
                   </div>
-                </div>
+                </motion.div>
                 <p className="text-gray-400 text-xs mb-2 leading-snug">
                   We always available to discuss with you
                 </p>
@@ -314,7 +461,6 @@ export default function FAQPage() {
                   info@domain.com
                 </p>
 
-                {/* Using Button component linked to contact page */}
                 <Button
                   size="small"
                   variant="primary"
@@ -324,31 +470,44 @@ export default function FAQPage() {
                   Contact Us
                   <ArrowRightIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
-              </div>
+              </motion.div>
             </div>
-          </aside>
+          </motion.aside>
 
           {/* Main content */}
           <main className="flex-1">
             {faqSections.map((section, si) => (
-              <div
+              <motion.div
                 key={si}
                 id={section.title.toLowerCase().replace(/\s+/g, "-")}
+                initial={{ opacity: 0, y: 30 }}
+                animate={
+                  hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
+                }
+                transition={{
+                  duration: 0.6,
+                  delay: hasAnimated ? si * 0.1 + 0.2 : 0,
+                  ease: smoothEase,
+                }}
                 className="mb-10 scroll-mt-24"
               >
                 <h2 className="text-white text-2xl font-bold mb-5 pb-2 border-b border-gray-800">
                   {section.title}
                 </h2>
                 {section.items.map((item, ii) => (
-                  <AccordionItem key={ii} item={item} />
+                  <AccordionItem
+                    key={ii}
+                    item={item}
+                    index={ii}
+                    hasAnimated={hasAnimated}
+                  />
                 ))}
-              </div>
+              </motion.div>
             ))}
           </main>
         </div>
       </div>
 
-      {/* Custom scrollbar styling for desktop only */}
       <style>{`
         @media (min-width: 768px) {
           aside::-webkit-scrollbar {
@@ -364,6 +523,27 @@ export default function FAQPage() {
             background: #2979ff;
             border-radius: 10px;
           }
+        }
+        
+        /* Animation classes */
+        .opacity-0 {
+          opacity: 0;
+        }
+        
+        .opacity-100 {
+          opacity: 1;
+        }
+        
+        .translate-y-0 {
+          transform: translateY(0);
+        }
+        
+        .translate-y-4 {
+          transform: translateY(1rem);
+        }
+        
+        .translate-y-8 {
+          transform: translateY(2rem);
         }
       `}</style>
     </div>

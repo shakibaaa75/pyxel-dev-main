@@ -1,54 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, useInView, type Transition } from "framer-motion";
 import { ArrowUpRight, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Button, { ArrowRightIcon } from "../../button";
-
-interface PortfolioItem {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  category: string;
-}
+import {
+  portfolioItems,
+  type PortfolioItem,
+} from "../../../data/Portfoliodata";
 
 interface PortfolioSectionProps {
   title?: string;
   highlightedWord?: string;
   subtitle?: string;
   buttonText?: string;
-  buttonLink?: string;
-  onButtonClick?: () => void;
 }
-
-const portfolioItems: PortfolioItem[] = [
-  {
-    id: 1,
-    title: "Stellar Tech Solutions",
-    description:
-      "We redesigned Stellar Tech's website to enhance user experience and drive engagement.",
-    image:
-      "https://img.freepik.com/premium-photo/mobile-app-ui-design-dark-mode-black-interface-orange-accents_1222783-62120.jpg?w=800",
-    category: "Mobile App",
-  },
-  {
-    id: 2,
-    title: "Green Wave Foods",
-    description:
-      "We built a user-friendly Shopping platform for Green Wave Foods with seamless checkout.",
-    image:
-      "https://cdn.dribbble.com/userupload/45840875/file/00faab2fd3f9d11acb8f902f24ec0d46.png?resize=800x",
-    category: "Web Design",
-  },
-  {
-    id: 3,
-    title: "Horizon Real Estate",
-    description:
-      "We helped Horizon Real Estate establish a trusted brand identity across all platforms.",
-    image:
-      "https://mir-s3-cdn-cf.behance.net/project_modules/fs/1d5e3b174890851.64aa8bf1d92be.jpg",
-    category: "Branding",
-  },
-];
 
 const smoothEase: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
@@ -65,6 +30,9 @@ const PortfolioCard: React.FC<{
   isLoaded: boolean;
 }> = ({ item, index, isLoaded }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
+
+  const goToSingle = () => navigate(`/portfolio/${item.slug}`);
 
   return (
     <motion.div
@@ -78,7 +46,8 @@ const PortfolioCard: React.FC<{
       whileHover={{ y: -8, transition: { duration: 0.3, ease: smoothEase } }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      className="group relative bg-[#161616] rounded-2xl sm:rounded-3xl overflow-hidden"
+      onClick={goToSingle}
+      className="group relative bg-[#161616] rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer"
       style={{ border: "1px solid rgba(255, 255, 255, 0.05)" }}
     >
       <motion.div
@@ -93,7 +62,6 @@ const PortfolioCard: React.FC<{
           animate={{ opacity: isHovered ? 1 : 0 }}
           transition={{ duration: 0.3 }}
         />
-
         <motion.img
           src={item.image}
           alt={item.title}
@@ -101,7 +69,6 @@ const PortfolioCard: React.FC<{
           animate={isHovered ? { scale: 1.1 } : { scale: 1 }}
           transition={{ duration: 0.7, ease: smoothEase }}
         />
-
         <motion.span
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : -10 }}
@@ -138,6 +105,10 @@ const PortfolioCard: React.FC<{
             whileHover={{ scale: 1.1, rotate: 45 }}
             whileTap={{ scale: 0.95 }}
             transition={springTransition}
+            onClick={(e) => {
+              e.stopPropagation();
+              goToSingle();
+            }}
             className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-[#2E6BFF] rounded-full flex items-center justify-center shadow-lg shadow-blue-900/40"
           >
             <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
@@ -161,18 +132,15 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({
   title = "Our Design",
   highlightedWord = "Masterpieces",
   subtitle = "Portfolio",
-  buttonText = "Get In Touch",
-  buttonLink,
-  onButtonClick,
+  buttonText = "View All Projects",
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.15 });
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (isInView && !isLoaded) {
-      setIsLoaded(true);
-    }
+    if (isInView && !isLoaded) setIsLoaded(true);
   }, [isInView, isLoaded]);
 
   const renderAnimatedText = (text: string, baseDelay = 0) => {
@@ -192,12 +160,14 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({
     });
   };
 
+  const homeItems = portfolioItems.slice(0, 3);
+
   return (
     <section
       ref={sectionRef}
       className="w-full h-auto bg-[#161616] flex items-center justify-center py-10 sm:py-12 md:py-16 lg:py-20 font-sans relative overflow-hidden"
     >
-      <div className="bg-[#1C1C1C] pt-8 sm:pt-10 rounded-2xl sm:rounded-3xl ">
+      <div className="bg-[#1C1C1C] pt-8 sm:pt-10 rounded-2xl sm:rounded-3xl">
         <div className="max-w-[1400px] mx-auto w-full px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-6 sm:mb-8 md:mb-10 lg:mb-12 xl:mb-16 gap-4 sm:gap-6 lg:gap-8">
             <div className="space-y-2 sm:space-y-3 lg:space-y-4 w-full lg:w-auto">
@@ -208,11 +178,7 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                 }
                 transition={{ duration: 0.6, delay: 0.1, ease: smoothEase }}
                 className="font-['Montserrat'] font-semibold text-white flex items-center gap-2"
-                style={{
-                  fontSize: "14px",
-                  lineHeight: "19.2px",
-                  letterSpacing: "0%",
-                }}
+                style={{ fontSize: "14px", lineHeight: "19.2px" }}
               >
                 <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-[#2E6BFF]" />
                 <span className="text-white text-sm sm:text-base">
@@ -230,7 +196,6 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({
                 style={{
                   fontSize: "clamp(24px, 6vw, 45px)",
                   lineHeight: "1.2",
-                  letterSpacing: "0%",
                 }}
               >
                 <span className="text-white block sm:inline">{title} </span>
@@ -258,32 +223,20 @@ const PortfolioSection: React.FC<PortfolioSectionProps> = ({
               transition={{ duration: 0.6, delay: 0.4, ease: smoothEase }}
               className="w-full sm:w-auto"
             >
-              {buttonLink ? (
-                <Button
-                  size="default"
-                  variant="primary"
-                  href={buttonLink}
-                  className="w-full sm:w-auto"
-                >
-                  {buttonText}
-                  <ArrowRightIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-                </Button>
-              ) : (
-                <Button
-                  size="default"
-                  variant="primary"
-                  onClick={onButtonClick}
-                  className="w-full sm:w-auto"
-                >
-                  {buttonText}
-                  <ArrowRightIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-                </Button>
-              )}
+              <Button
+                size="default"
+                variant="primary"
+                onClick={() => navigate("/portfolio")}
+                className="w-full sm:w-auto cursor-pointer"
+              >
+                {buttonText}
+                <ArrowRightIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+              </Button>
             </motion.div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-8">
-            {portfolioItems.map((item, index) => (
+            {homeItems.map((item, index) => (
               <PortfolioCard
                 key={item.id}
                 item={item}
