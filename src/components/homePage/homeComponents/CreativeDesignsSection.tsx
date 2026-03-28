@@ -103,7 +103,7 @@ const CreativeDesignsSection: React.FC<CreativeDesignsSectionProps> = ({
   return (
     <div
       ref={sectionRef}
-      className={`flex items-center justify-center py-8 sm:py-14 md:py-16 lg:py-20 xl:py-[80px] overflow-x-hidden ${className}`}
+      className={`flex items-center justify-center py-2 sm:py-3 md:py-4 lg:py-5 overflow-x-hidden ${className}`}
     >
       <motion.section
         initial={{ opacity: 0, y: 50 }}
@@ -112,13 +112,13 @@ const CreativeDesignsSection: React.FC<CreativeDesignsSectionProps> = ({
         className="max-w-[1400px] mx-auto w-full px-3 sm:px-6 lg:px-8 xl:px-12 relative z-10"
       >
         <div
-          className="w-full rounded-2xl sm:rounded-[24px] lg:rounded-[28px] py-6 sm:py-10 lg:py-14 px-4 sm:px-6 lg:px-[60px] flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-10 relative overflow-hidden"
+          className="w-full rounded-2xl sm:rounded-[24px] lg:rounded-[28px] py-3 sm:py-4 md:py-5 lg:py-6 px-4 sm:px-6 lg:px-[40px] xl:px-[60px] flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-10 relative overflow-hidden"
           style={{
             background: `linear-gradient(135deg, ${gradientStart}, ${gradientEnd})`,
           }}
         >
           {/* Background decoration for visual interest */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+          <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -128,10 +128,10 @@ const CreativeDesignsSection: React.FC<CreativeDesignsSectionProps> = ({
             transition={{ duration: 0.8, delay: 0.2, ease: smoothEase }}
             className="flex-1 w-full max-w-[740px] text-left"
           >
-            <h2 className="font-['Montserrat'] text-xl sm:text-3xl md:text-4xl lg:text-[2.4rem] font-bold text-white mb-3 sm:mb-5 leading-tight lg:leading-[1.15] tracking-[-0.3px] text-left">
+            <h2 className="font-['Montserrat'] text-xl sm:text-2xl md:text-3xl lg:text-[2.4rem] font-bold text-white mb-2 sm:mb-2 md:mb-3 leading-tight lg:leading-[1.15] tracking-[-0.3px] text-left">
               Creative Designs That Drive Results
             </h2>
-            <p className="text-sm sm:text-base md:text-[0.975rem] text-white/85 leading-relaxed lg:leading-[1.75] mb-6 sm:mb-8 lg:mb-11 max-w-[700px] text-left">
+            <p className="text-sm sm:text-base md:text-[0.975rem] text-white/85 leading-relaxed lg:leading-[1.6] mb-3 sm:mb-4 md:mb-5 lg:mb-6 max-w-[700px] text-left">
               We specialize in delivering innovative and impactful design
               solutions that elevate brands and drive results. From digital
               experiences to print media, our team of creative professionals is
@@ -163,7 +163,7 @@ const CreativeDesignsSection: React.FC<CreativeDesignsSectionProps> = ({
                 initial={{ scaleY: 0 }}
                 animate={hasAnimated ? { scaleY: 1 } : { scaleY: 0 }}
                 transition={{ duration: 0.5, delay: 0.5, ease: smoothEase }}
-                className="hidden sm:block w-px h-8 sm:h-10 lg:h-14 bg-white/30 mx-4 sm:mx-6 lg:mx-10 origin-top"
+                className="hidden sm:block w-px h-8 sm:h-9 lg:h-10 bg-white/30 mx-4 sm:mx-5 lg:mx-8 origin-top"
               />
 
               <motion.div
@@ -187,7 +187,7 @@ const CreativeDesignsSection: React.FC<CreativeDesignsSectionProps> = ({
                 initial={{ scaleY: 0 }}
                 animate={hasAnimated ? { scaleY: 1 } : { scaleY: 0 }}
                 transition={{ duration: 0.5, delay: 0.7, ease: smoothEase }}
-                className="hidden sm:block w-px h-8 sm:h-10 lg:h-14 bg-white/30 mx-4 sm:mx-6 lg:mx-10 origin-top"
+                className="hidden sm:block w-px h-8 sm:h-9 lg:h-10 bg-white/30 mx-4 sm:mx-5 lg:mx-8 origin-top"
               />
 
               <motion.div
@@ -218,7 +218,7 @@ const CreativeDesignsSection: React.FC<CreativeDesignsSectionProps> = ({
                 : { opacity: 0, scale: 0.8, rotate: -20 }
             }
             transition={{ duration: 0.8, delay: 0.3, ease: smoothEase }}
-            className="relative w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px] lg:w-[230px] lg:h-[230px] shrink-0 flex items-center justify-center mt-2 sm:mt-6 lg:mt-0"
+            className="relative w-[120px] h-[120px] sm:w-[150px] sm:h-[150px] md:w-[170px] md:h-[170px] lg:w-[180px] lg:h-[180px] shrink-0 flex items-center justify-center mt-0 sm:mt-0 lg:mt-0"
           >
             {/* Outer rotating circle with text */}
             <div className="absolute inset-0 rounded-full bg-[#0f0f10] flex items-center justify-center">
@@ -234,7 +234,7 @@ const CreativeDesignsSection: React.FC<CreativeDesignsSectionProps> = ({
                       d="M 115,115 m -100,0 a 100,100 0 1,1 200,0 a 100,100 0 1,1 -200,0"
                     />
                   </defs>
-                  <text className="fill-white text-[11px] font-semibold tracking-[2px] font-sans uppercase">
+                  <text className="fill-white text-[10px] sm:text-[11px] font-semibold tracking-[2px] font-sans uppercase">
                     <textPath href="#outerCircle" startOffset="0%">
                       Connect Now • Connect Now • Connect Now • Connect Now •
                     </textPath>
@@ -245,16 +245,16 @@ const CreativeDesignsSection: React.FC<CreativeDesignsSectionProps> = ({
 
             {/* Middle blue circle - Now dynamic to match gradient */}
             <div
-              className="absolute w-[100px] h-[100px] sm:w-[130px] sm:h-[130px] md:w-[150px] md:h-[150px] lg:w-[170px] lg:h-[170px] rounded-full z-10"
+              className="absolute w-[80px] h-[80px] sm:w-[105px] sm:h-[105px] md:w-[125px] md:h-[125px] lg:w-[135px] lg:h-[135px] rounded-full z-10"
               style={{
                 background: `linear-gradient(135deg, ${gradientStart}, ${gradientEnd})`,
               }}
             />
 
             {/* Inner dark circle with arrow */}
-            <div className="absolute w-[60px] h-[60px] sm:w-[75px] sm:h-[75px] md:w-[95px] md:h-[95px] lg:w-[110px] lg:h-[110px] rounded-full bg-[#0f0f10] flex items-center justify-center z-20 cursor-pointer hover:scale-105 transition-transform duration-300">
+            <div className="absolute w-[45px] h-[45px] sm:w-[60px] sm:h-[60px] md:w-[75px] md:h-[75px] lg:w-[85px] lg:h-[85px] rounded-full bg-[#0f0f10] flex items-center justify-center z-20 cursor-pointer hover:scale-105 transition-transform duration-300">
               <svg
-                className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 text-[#6aa9ff] -rotate-45"
+                className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 lg:w-5 lg:h-5 text-[#6aa9ff] -rotate-45"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"

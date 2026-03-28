@@ -1,15 +1,15 @@
-import ServicesGridCards from "./ServicesGridCards";
+import PricingPage from "./PricingPage";
 import CreativeDesignsSection from "../homePage/homeComponents/CreativeDesignsSection";
 import ToolsSection from "../homePage/homeComponents/ToolsSection";
 
-export const ServicesPage = () => {
+const PricingAllsec = () => {
   return (
     <>
-      <ServicesGridCards />
+      <PricingPage />
       <CreativeDesignsSection className="bg-[#111111]" />
       <ToolsSection backgroundColor="#111111" />
     </>
   );
 };
 
-export default ServicesPage;
+export default PricingAllsec;

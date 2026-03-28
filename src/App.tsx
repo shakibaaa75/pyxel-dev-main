@@ -62,6 +62,8 @@ const PortfolioArchivePage = lazy(
 const PortfolioSinglePage = lazy(
   () => import("./components/portfolio/Portfoliosinglepage"),
 );
+const TeamPage = lazy(() => import("./components/team/TeamPgae"));
+const PricingAllsec = lazy(() => import("./components/pricing/PricingAllsec"));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -75,7 +77,7 @@ const PrefetchLinks = () => {
   useEffect(() => {
     if ("connection" in navigator && (navigator as any).connection?.saveData)
       return;
-    ["/blogs", "/services"].forEach((link) => {
+    ["/blogs", "/services", "/team", "/pricing"].forEach((link) => {
       const tag = document.createElement("link");
       tag.rel = "prefetch";
       tag.href = link;
@@ -114,6 +116,8 @@ const App = () => {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/portfolio" element={<PortfolioArchivePage />} />
             <Route path="/portfolio/:slug" element={<PortfolioSinglePage />} />
+            <Route path="/team" element={<TeamPage />} />
+            <Route path="/pricing" element={<PricingAllsec />} />
             <Route
               path="*"
               element={

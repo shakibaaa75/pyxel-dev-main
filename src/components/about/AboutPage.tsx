@@ -8,6 +8,7 @@ import Button from "../button";
 import { ArrowRightIcon } from "lucide-react";
 import TestimonialsSection from "./TestimonialsSection";
 import FAQAccordion from "./FAQAccordion";
+import { Link } from "react-router-dom"; // Add this import
 
 const AboutPage = () => {
   // Custom header with button
@@ -24,19 +25,21 @@ const AboutPage = () => {
             </h2>
           </div>
 
-          <Button
-            size="default"
-            variant="primary"
-            onClick={() => console.log("Join team clicked")}
-            className="w-full sm:w-auto"
-          >
-            Join Our Team
-            <ArrowRightIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-          </Button>
+          <Link to="/team">
+            <Button
+              size="default"
+              variant="primary"
+              className="w-full cursor-pointer sm:w-auto"
+            >
+              Join Our Team
+              <ArrowRightIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
   );
+
   return (
     <>
       <AboutusFirstsec />

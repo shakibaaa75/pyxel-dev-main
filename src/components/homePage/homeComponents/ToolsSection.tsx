@@ -65,6 +65,8 @@ interface ToolsSectionProps {
   buttonText?: string;
   buttonLink?: string;
   onButtonClick?: () => void;
+  backgroundColor?: string; // NEW: Custom background color prop
+  className?: string; // NEW: Additional custom classes
 }
 
 const smoothEase: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
@@ -192,6 +194,8 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({
   buttonText = "Let's Get Started",
   buttonLink,
   onButtonClick,
+  backgroundColor = "#161616", // NEW: Default background color
+  className = "", // NEW: Additional classes
 }) => {
   const [activeId, setActiveId] = useState<number | null>(null);
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -231,7 +235,8 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({
   return (
     <section
       ref={sectionRef}
-      className="w-full h-auto bg-[#161616] py-12 sm:py-16 lg:py-20 overflow-x-hidden"
+      style={{ backgroundColor }} // NEW: Dynamic background color
+      className={`w-full h-auto py-12 sm:py-16 lg:py-20 overflow-x-hidden ${className}`}
     >
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 sm:mb-10 lg:mb-12 xl:mb-16 gap-4 sm:gap-6">

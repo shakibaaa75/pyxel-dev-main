@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, useInView, type Transition } from "framer-motion";
-import { Plus, Minus } from "lucide-react";
+import { Plus, Minus, Sparkles } from "lucide-react";
+import Button, { ArrowRightIcon } from "../../button";
 
 interface MethodologyStep {
   id: number;
@@ -81,52 +82,39 @@ export default function MethodologyComponent() {
   };
 
   return (
-    // ✅ FIX: Removed overflow-x-hidden here — it was creating a scroll trap.
-    // Use clip-x on a non-scrolling parent instead if you need to hide overflow.
     <div
       className="h-auto bg-[#161616] text-white py-12 sm:py-16 lg:py-20"
       style={{ fontFamily: "Montserrat, sans-serif" }}
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
-        
-        @keyframes rotate360 {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .rotate-continuous {
-          animation: rotate360 30s linear infinite;
-        }
-        .rotate-continuous:hover {
-          animation-play-state: paused;
-        }
       `}</style>
 
       <div
         ref={sectionRef}
         className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10"
       >
-        <div className="mb-10 sm:mb-12 lg:mb-16 xl:mb-20 flex flex-row items-start justify-between gap-4 sm:gap-6">
-          <div className="flex-1">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8 sm:mb-10 lg:mb-12 xl:mb-16 gap-4 sm:gap-6">
+          <div className="space-y-2 sm:space-y-3 lg:space-y-4 w-full lg:w-auto">
             <motion.div
-              className="flex items-center gap-2 mb-3 sm:mb-4"
+              className="flex items-center gap-2 text-[#2A7DFF]"
               initial={{ opacity: 0, y: 20 }}
               animate={
                 hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
               }
               transition={{ duration: 0.6, delay: 0.1, ease: smoothEase }}
             >
-              <span className="text-blue-400 text-xs sm:text-sm">✦</span>
-              <span className="text-gray-400 text-xs sm:text-sm tracking-wide">
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="font-['Rethink_Sans'] text-xs sm:text-sm font-medium tracking-wide uppercase">
                 Creative Toolkit
               </span>
             </motion.div>
 
-            <h1 className="font-['Montserrat'] text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight">
+            <h1 className="font-['Montserrat'] text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-bold text-white leading-tight">
               <span className="text-white block sm:inline">
                 {renderAnimatedText("Our Methodology ", 0.2)}
               </span>
-              <span className="text-blue-500 block sm:inline">
+              <span className="text-[#2A7DFF] block sm:inline">
                 {renderAnimatedText(
                   "For Success",
                   0.2 + "Our Methodology ".length * 0.01,
@@ -136,51 +124,19 @@ export default function MethodologyComponent() {
           </div>
 
           <motion.div
-            className="relative w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] md:w-[140px] md:h-[140px] lg:w-[162px] lg:h-[162px] flex-shrink-0 rotate-continuous cursor-pointer p-[5px]"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={
-              hasAnimated
-                ? { opacity: 1, scale: 1 }
-                : { opacity: 0, scale: 0.8 }
-            }
-            transition={{ duration: 0.6, delay: 0.5, ease: smoothEase }}
-            whileHover={{ scale: 1.05 }}
+            className="self-start lg:self-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.6, delay: 0.3, ease: smoothEase }}
           >
-            <svg viewBox="0 0 200 200" className="w-full h-full">
-              <circle cx="100" cy="100" r="95" fill="#3B82F6" />
-              <defs>
-                <path
-                  id="circlePath"
-                  d="M 100, 100 m -80, 0 a 80,80 0 1,1 160,0 a 80,80 0 1,1 -160,0"
-                  fill="none"
-                />
-              </defs>
-              <text
-                style={{
-                  fontSize: "16px",
-                  fontWeight: 500,
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  fill: "black",
-                }}
-              >
-                <textPath href="#circlePath" startOffset="0%">
-                  Contact Now • Contact Now • Contact Now •
-                </textPath>
-              </text>
-              <g transform="translate(100, 100)">
-                <circle cx="0" cy="0" r="28" fill="#1F1F1F" />
-                <path
-                  d="M -10 0 L 10 0 M 0 -10 L 10 0 L 0 10"
-                  stroke="white"
-                  strokeWidth="2.5"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  transform="rotate(-45)"
-                />
-              </g>
-            </svg>
+            <Button
+              size="default"
+              variant="primary"
+              onClick={() => console.log("Contact clicked")}
+            >
+              Contact Us
+              <ArrowRightIcon className="h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5" />
+            </Button>
           </motion.div>
         </div>
 
@@ -197,7 +153,7 @@ export default function MethodologyComponent() {
           >
             <div className="relative w-full aspect-square">
               <motion.div
-                className="absolute inset-0 rotate-continuous"
+                className="absolute inset-0"
                 whileHover={{ scale: 1.02 }}
                 transition={springTransition}
               >
