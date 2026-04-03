@@ -65,7 +65,7 @@ export default function Footer() {
   ];
 
   return (
-    <div className="bg-[#0a0a0a] px-4 sm:px-6 lg:px-[30px]">
+    <div className="bg-[#161616] px-4 sm:px-6 lg:px-[30px]">
       <footer className="bg-[#2E6BFF] text-white rounded-[2rem] sm:rounded-[2.5rem] pt-8 sm:pt-10 lg:pt-12 pb-6 sm:pb-8 px-4 sm:px-8 lg:px-12">
         <div className="max-w-7xl mx-auto">
           {/* Main Grid */}
