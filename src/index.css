@@ -1,20 +1,25 @@
 @import "tailwindcss";
 
-/* Import Montserrat font from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
-
-/* Apply Montserrat as the global font */
-html {
-  overflow-x: hidden;
-  font-family: 'Montserrat', sans-serif;
+@layer base {
+  html {
+    overflow-x: hidden;
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  body {
+    overflow-x: clip;
+    font-family: 'Montserrat', sans-serif;
+  }
+  
+  * {
+    font-family: inherit;
+  }
 }
 
-body {
-  overflow-x: clip;
-  font-family: 'Montserrat', sans-serif;
+.tool-icon svg rect {
+  fill: rgba(0,0,0,0) !important;
 }
 
-/* Ensure all elements inherit the font */
-* {
-  font-family: inherit;
+.tool-card:hover .tool-icon svg rect {
+  fill: #ffffff !important;
 }

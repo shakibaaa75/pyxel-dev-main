@@ -1,6 +1,11 @@
-import React, { useRef, useEffect, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import React, { useRef, useState } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import Button, { ArrowRightIcon } from "../button";
+
+interface FAQItem {
+  question: string;
+  answer: string;
+}
 
 interface FAQProps {
   buttonText?: string;
@@ -10,11 +15,11 @@ interface FAQProps {
   className?: string;
 }
 
-const faqs = [
+const FAQS: FAQItem[] = [
   {
     question: "What services does your agency provide?",
     answer:
-      "We specialize in including graphic design, branding, website design and development, UX/UI design, social media marketing, digital advertising, video production, and content creation.",
+      "We specialize in graphic design, branding, website design and development, UX/UI design, social media marketing, digital advertising, video production, and content creation.",
   },
   {
     question: "Who are your typical clients?",
@@ -29,7 +34,7 @@ const faqs = [
   {
     question: "What is your pricing structure?",
     answer:
-      "We offer flexible pricing models including fixed-price packages, hourly rates, and retainer agreements. We tailor our approach based on your project needs and budget.",
+      "We offer flexible pricing models including fixed-price packages, hourly rates, and retainer agreements tailored to your project needs and budget.",
   },
   {
     question: "Why are UX and UI important?",
@@ -40,138 +45,72 @@ const faqs = [
 
 const smoothEase: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
-const PlusIcon = () => (
+const PlusIcon = ({ open }: { open: boolean }) => (
   <svg
-    className="w-4 h-4 text-blue-500"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
-  >
-    <line x1="12" y1="5" x2="12" y2="19" />
-    <line x1="5" y1="12" x2="19" y2="12" />
-  </svg>
-);
-
-const MinusIcon = () => (
-  <svg
-    className="w-4 h-4 text-blue-500"
+    className="w-4 h-4 text-blue-500 flex-shrink-0"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
     strokeWidth="2.5"
   >
     <line x1="5" y1="12" x2="19" y2="12" />
+    <motion.line
+      x1="12"
+      y1="5"
+      x2="12"
+      y2="19"
+      animate={{ opacity: open ? 0 : 1 }}
+      transition={{ duration: 0.2 }}
+    />
   </svg>
 );
 
-const NavPlusIcon = () => (
-  <svg
-    className="w-3.5 h-3.5 text-blue-500"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
-  >
-    <line x1="12" y1="5" x2="12" y2="19" />
-    <line x1="5" y1="12" x2="19" y2="12" />
-  </svg>
-);
-
-const FAQItem: React.FC<{
-  faq: (typeof faqs)[0];
+const AccordionItem: React.FC<{
+  item: FAQItem;
   index: number;
   isOpen: boolean;
   onToggle: () => void;
-  isAnimated: boolean;
-  delay: number;
-}> = ({ faq, index, isOpen, onToggle, isAnimated, delay }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30, scale: 0.98 }}
-      animate={
-        isAnimated
-          ? { opacity: 1, y: 0, scale: 1 }
-          : { opacity: 0, y: 30, scale: 0.98 }
-      }
-      transition={{
-        duration: 0.5,
-        delay: isAnimated ? delay + index * 0.08 : 0,
-        ease: smoothEase,
-      }}
-      className="rounded-2xl overflow-hidden transition-all duration-300"
-      style={{
-        background: "#1a1a1a",
-        border: "1px solid #2a2a2a",
-      }}
+  visible: boolean;
+}> = ({ item, index, isOpen, onToggle, visible }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 24 }}
+    animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+    transition={{
+      duration: 0.5,
+      delay: visible ? 0.7 + index * 0.08 : 0,
+      ease: smoothEase,
+    }}
+    className="rounded-2xl overflow-hidden"
+    style={{ background: "#1a1a1a", border: "1px solid #2a2a2a" }}
+  >
+    <button
+      className="w-full flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 text-left"
+      onClick={onToggle}
     >
-      <motion.button
-        className="w-full flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 text-left"
-        onClick={onToggle}
-        whileHover={{ backgroundColor: "rgba(255,255,255,0.02)" }}
-        transition={{ duration: 0.2 }}
-      >
-        <motion.span
-          className="text-sm sm:text-base font-bold text-white pr-3 sm:pr-4 leading-relaxed"
-          initial={{ opacity: 0, x: -10 }}
-          animate={isAnimated ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
-          transition={{
-            duration: 0.4,
-            delay: isAnimated ? delay + index * 0.08 + 0.1 : 0,
-            ease: smoothEase,
-          }}
-        >
-          {faq.question}
-        </motion.span>
+      <span className="text-sm sm:text-base font-bold text-white pr-4 leading-relaxed">
+        {item.question}
+      </span>
+      <PlusIcon open={isOpen} />
+    </button>
 
-        <motion.span
-          className="flex-shrink-0"
-          initial={{ rotate: 0, scale: 0 }}
-          animate={
-            isAnimated ? { rotate: 0, scale: 1 } : { rotate: 0, scale: 0 }
-          }
-          transition={{
-            duration: 0.3,
-            delay: isAnimated ? delay + index * 0.08 + 0.15 : 0,
-            ease: "backOut",
-          }}
+    <AnimatePresence initial={false}>
+      {isOpen && (
+        <motion.div
+          key="answer"
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.35, ease: smoothEase }}
+          style={{ overflow: "hidden" }}
         >
-          <motion.div
-            animate={{ rotate: isOpen ? 45 : 0 }}
-            transition={{ duration: 0.3, ease: smoothEase }}
-          >
-            {isOpen ? <MinusIcon /> : <PlusIcon />}
-          </motion.div>
-        </motion.span>
-      </motion.button>
-
-      <motion.div
-        initial={false}
-        animate={{
-          maxHeight: isOpen ? "500px" : "0px",
-          opacity: isOpen ? 1 : 0,
-        }}
-        transition={{
-          duration: 0.4,
-          ease: smoothEase,
-        }}
-        style={{
-          overflow: "hidden",
-        }}
-      >
-        <motion.p
-          className="px-4 sm:px-6 pb-4 sm:pb-6 text-xs sm:text-sm leading-relaxed"
-          style={{ color: "#9ca3af" }}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: isOpen ? 1 : 0, y: isOpen ? 0 : -10 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-        >
-          {faq.answer}
-        </motion.p>
-      </motion.div>
-    </motion.div>
-  );
-};
+          <p className="px-4 sm:px-6 pb-4 sm:pb-6 text-xs sm:text-sm leading-relaxed text-gray-400">
+            {item.answer}
+          </p>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </motion.div>
+);
 
 export default function FAQ({
   buttonText = "All Team Members",
@@ -180,29 +119,21 @@ export default function FAQ({
   bgColor = "#111111",
   className = "",
 }: FAQProps) {
-  const [hasAnimated, setHasAnimated] = useState<boolean>(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const visible = useInView(ref, { once: true, amount: 0.15 });
+  const [openIndex, setOpenIndex] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [openIndex, setOpenIndex] = useState<number>(0);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.15 });
 
-  useEffect(() => {
-    if (isInView && !hasAnimated) {
-      setHasAnimated(true);
+  const toggle = (i: number) => setOpenIndex((prev) => (prev === i ? -1 : i));
+
+  // Handle animation state
+  React.useEffect(() => {
+    if (visible) {
       setIsLoaded(true);
     }
-  }, [isInView, hasAnimated]);
+  }, [visible]);
 
-  const handleToggle = (i: number) => {
-    setOpenIndex((prev) => (prev === i ? -1 : i));
-  };
-
-  const handleButtonClick = () => {
-    if (onButtonClick) {
-      onButtonClick();
-    }
-  };
-
+  // Letter-by-letter animation function matching testimonials
   const renderAnimatedText = (text: string, baseDelay = 0) => {
     return text.split("").map((letter, index) => {
       const delay = baseDelay + index * 0.02;
@@ -222,166 +153,106 @@ export default function FAQ({
 
   return (
     <section
-      ref={sectionRef}
+      ref={ref}
       className={`py-12 sm:py-16 lg:py-20 overflow-hidden ${className}`}
       style={{ backgroundColor: bgColor }}
     >
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
-        {/* Header Row */}
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 mb-8 sm:mb-10 lg:mb-12">
-          <div>
-            {/* Label with sparkle animation */}
+        {/* Header - Matches testimonials section design with button */}
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 mb-12 sm:mb-16">
+          {/* Left side: Label + Heading */}
+          <div className="flex-1">
+            {/* Label with star symbol animation */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
-              animate={
-                hasAnimated ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }
-              }
+              animate={visible ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
               transition={{ duration: 0.5, delay: 0.2, ease: smoothEase }}
-              className="flex items-center gap-2 mb-3 sm:mb-4"
+              className="flex items-center gap-2 mb-6"
             >
-              <motion.div
+              <motion.span
                 initial={{ rotate: 0, scale: 0 }}
                 animate={
-                  hasAnimated
-                    ? { rotate: 360, scale: 1 }
-                    : { rotate: 0, scale: 0 }
+                  visible ? { rotate: 360, scale: 1 } : { rotate: 0, scale: 0 }
                 }
                 transition={{ duration: 0.6, delay: 0.3, ease: "backOut" }}
+                className="text-[#2A7DFF] text-lg"
               >
-                <NavPlusIcon />
-              </motion.div>
-              <span
-                className="text-xs sm:text-sm font-medium text-white tracking-widest uppercase"
-                style={{ letterSpacing: "0.1em" }}
-              >
+                ✦
+              </motion.span>
+              <span className="text-white font-medium text-sm tracking-wide">
                 FAQ's
               </span>
             </motion.div>
 
-            {/* Heading with letter-by-letter animation */}
-            <h2
-              className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white"
-              style={{
-                lineHeight: 1.1,
-              }}
-            >
+            {/* Heading with letter-by-letter animation - matching testimonials style */}
+            <h2 className="text-white text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight">
               <span className="block">
-                {renderAnimatedText("Everything you need ", 0.4)}
+                {renderAnimatedText("Everything you need to ", 0.4)}
                 <span className="inline-block">
                   {renderAnimatedText(
-                    "to know",
-                    0.4 + "Everything you need ".length * 0.02,
+                    "know",
+                    0.4 + "Everything you need to ".length * 0.02,
                   )}
                 </span>
               </span>
             </h2>
           </div>
 
-          {/* Button with scale animation */}
+          {/* Right side: Button */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={
-              hasAnimated
-                ? { opacity: 1, scale: 1 }
-                : { opacity: 0, scale: 0.9 }
+              visible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }
             }
-            transition={{ duration: 0.5, delay: 0.6, ease: smoothEase }}
-            className="w-full sm:w-auto"
+            transition={{ duration: 0.5, delay: 0.55, ease: smoothEase }}
+            className="w-full sm:w-auto flex-shrink-0"
           >
-            {buttonLink ? (
-              <Button
-                size="default"
-                variant="primary"
-                href={buttonLink}
-                className="w-full sm:w-auto"
-              >
-                {buttonText}
-                <ArrowRightIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-              </Button>
-            ) : (
-              <Button
-                size="default"
-                variant="primary"
-                onClick={handleButtonClick}
-                className="w-full sm:w-auto"
-              >
-                {buttonText}
-                <ArrowRightIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-              </Button>
-            )}
+            <Button
+              size="default"
+              variant="primary"
+              href={buttonLink}
+              onClick={!buttonLink ? onButtonClick : undefined}
+              className="w-full sm:w-auto"
+            >
+              {buttonText}
+              <ArrowRightIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+            </Button>
           </motion.div>
         </div>
 
-        {/* Two-column layout */}
+        {/* Body */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start">
-          {/* FAQ Accordion */}
+          {/* Accordion */}
           <div className="flex flex-col gap-3">
-            {faqs.map((faq, i) => (
-              <FAQItem
+            {FAQS.map((item, i) => (
+              <AccordionItem
                 key={i}
-                faq={faq}
+                item={item}
                 index={i}
                 isOpen={openIndex === i}
-                onToggle={() => handleToggle(i)}
-                isAnimated={hasAnimated}
-                delay={0.7}
+                onToggle={() => toggle(i)}
+                visible={visible}
               />
             ))}
           </div>
 
-          {/* Image - Responsive sizing for all devices */}
+          {/* Image */}
           <motion.div
             initial={{ opacity: 0, x: 50, scale: 0.95 }}
-            animate={
-              hasAnimated
-                ? { opacity: 1, x: 0, scale: 1 }
-                : { opacity: 0, x: 50, scale: 0.95 }
-            }
-            transition={{
-              duration: 0.7,
-              delay: 0.5,
-              ease: smoothEase,
-            }}
-            className="rounded-3xl overflow-hidden sticky top-24
-              /* Responsive height and width */
-              w-full
-              /* Mobile: smaller height */
-              h-[280px] sm:h-[320px] md:h-[380px] lg:h-[491px]
-              /* Optional: add max-height for very large screens */
-              xl:h-[520px]
-              /* Ensure image covers nicely */
-              relative"
+            animate={visible ? { opacity: 1, x: 0, scale: 1 } : {}}
+            transition={{ duration: 0.7, delay: 0.5, ease: smoothEase }}
+            className="relative rounded-3xl overflow-hidden sticky top-24
+              h-[280px] sm:h-[320px] md:h-[380px] lg:h-[491px] xl:h-[520px]"
           >
             <img
               src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80"
-              alt="Team member thinking"
+              alt="Team member"
               className="w-full h-full object-cover"
-              style={{ display: "block" }}
             />
-
-            {/* Subtle gradient overlay on image */}
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent rounded-3xl"
-              initial={{ opacity: 0 }}
-              animate={hasAnimated ? { opacity: 1 } : { opacity: 0 }}
-              transition={{ duration: 0.6, delay: 0.7 }}
-            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
           </motion.div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </section>
   );
 }

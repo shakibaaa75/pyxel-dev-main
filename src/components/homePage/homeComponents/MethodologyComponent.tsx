@@ -152,18 +152,28 @@ export default function MethodologyComponent() {
             transition={{ duration: 0.8, delay: 0.3, ease: smoothEase }}
           >
             <div className="relative w-full aspect-square">
+              {/* Rotating outer circle with hover scale */}
               <motion.div
                 className="absolute inset-0"
                 whileHover={{ scale: 1.02 }}
                 transition={springTransition}
+                animate={hasAnimated ? { rotate: 360 } : { rotate: 0 }}
+                style={{ rotate: 0 }}
               >
-                <img
+                <motion.img
                   src="/images/how-work-image-circle.png.png"
                   alt="Methodology Circle"
                   className="w-full h-full object-contain"
+                  animate={hasAnimated ? { rotate: 360 } : { rotate: 0 }}
+                  transition={{
+                    duration: 25,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
                 />
               </motion.div>
 
+              {/* Center content */}
               <motion.div
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[67.6%] h-[67.6%] rounded-full overflow-hidden shadow-2xl"
                 initial={{ scale: 0.8, opacity: 0 }}

@@ -64,7 +64,7 @@ const services: ServiceItem[] = [
       "End-to-end ecommerce solutions to maximize sales and improve customer experience.",
     icon: <ShoppingBag size={24} />,
     image:
-      "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=1600",
+      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=1600",
   },
   {
     id: "seo",

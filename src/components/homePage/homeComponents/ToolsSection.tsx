@@ -15,49 +15,49 @@ const tools: ToolItem[] = [
     id: 1,
     name: "Figma",
     category: "Design Tool",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/3/33/Figma-logo.svg",
+    logo: "/svg/Background (1).svg",
   },
   {
     id: 2,
     name: "Framer",
     category: "Design Tool",
-    logo: "https://cdn.dribbble.com/userupload/32025683/file/original-2f0502fd7bd82b3566b9bcf62fc84c34.png?resize=200x200",
+    logo: "/svg/Background.svg",
   },
   {
     id: 3,
     name: "Illustrator",
     category: "Design Tool",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Adobe_Illustrator_CC_icon.svg/240px-Adobe_Illustrator_CC_icon.svg.png",
+    logo: "/svg/Overlay.svg",
   },
   {
     id: 4,
     name: "Adobe Xd",
     category: "Design Tool",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Adobe_XD_CC_icon.svg/240px-Adobe_XD_CC_icon.svg.png",
+    logo: "/svg/Background (6).svg",
   },
   {
     id: 5,
     name: "Indesign",
     category: "Design Tool",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Adobe_InDesign_CC_icon.svg/240px-Adobe_InDesign_CC_icon.svg.png",
+    logo: "/svg/Background (5).svg",
   },
   {
     id: 6,
     name: "Photoshop",
     category: "Design Tool",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Adobe_Photoshop_CC_icon.svg/240px-Adobe_Photoshop_CC_icon.svg.png",
+    logo: "/svg/Background (4).svg",
   },
   {
     id: 7,
     name: "Lightroom",
     category: "Design Tool",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Adobe_Photoshop_Lightroom_CC_logo.svg/240px-Adobe_Photoshop_Lightroom_CC_logo.svg.png",
+    logo: "/svg/Background (2).svg",
   },
   {
     id: 8,
     name: "Incopy",
     category: "Design Tool",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Adobe_InCopy_CC_icon.svg/240px-Adobe_InCopy_CC_icon.svg.png",
+    logo: "/svg/Background (3).svg",
   },
 ];
 
@@ -65,8 +65,8 @@ interface ToolsSectionProps {
   buttonText?: string;
   buttonLink?: string;
   onButtonClick?: () => void;
-  backgroundColor?: string; // NEW: Custom background color prop
-  className?: string; // NEW: Additional custom classes
+  backgroundColor?: string;
+  className?: string;
 }
 
 const smoothEase: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
@@ -76,6 +76,54 @@ const springTransition: Transition = {
   stiffness: 100,
   damping: 15,
   mass: 1,
+};
+
+// SVG cache to avoid refetching
+const svgCache = new Map<string, string>();
+
+const InlineSvg: React.FC<{
+  src: string;
+  className?: string;
+  isHovered: boolean;
+}> = ({ src, className, isHovered }) => {
+  const [svgContent, setSvgContent] = useState<string>("");
+
+  useEffect(() => {
+    if (svgCache.has(src)) {
+      setSvgContent(svgCache.get(src)!);
+      return;
+    }
+
+    fetch(src)
+      .then((res) => res.text())
+      .then((svg) => {
+        // Replace hardcoded #1C1C1C with currentColor
+        // Also ensure the SVG has proper classes for styling
+        const modified = svg
+          .replace(/fill="#1C1C1C"/gi, 'fill="currentColor"')
+          .replace(/fill='#1C1C1C'/gi, "fill='currentColor'")
+          .replace(/<svg/, '<svg class="w-full h-full"');
+
+        svgCache.set(src, modified);
+        setSvgContent(modified);
+      })
+      .catch(() => {
+        // Fallback: try to use as image if fetch fails
+        setSvgContent("");
+      });
+  }, [src]);
+
+  if (!svgContent) {
+    // Fallback to img while loading or on error
+    return <img src={src} alt="" className={className} />;
+  }
+
+  return (
+    <div
+      className={`${className} ${isHovered ? "text-white" : "text-[#1C1C1C]"} transition-colors duration-300`}
+      dangerouslySetInnerHTML={{ __html: svgContent }}
+    />
+  );
 };
 
 const ToolCard: React.FC<{
@@ -100,28 +148,10 @@ const ToolCard: React.FC<{
 
   const getLogoContainerClasses = (): string => {
     let classes =
-      "relative w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300";
+      "tool-icon relative w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300 flex items-center justify-center";
 
     if (showActiveStyles) {
       classes += " scale-110";
-    }
-
-    if (tool.name === "Figma") {
-      classes += " bg-white p-1 sm:p-1.5";
-    }
-
-    if (tool.name === "Framer") {
-      classes += " bg-gradient-to-br from-blue-500 to-purple-600";
-    }
-
-    return classes;
-  };
-
-  const getImageClasses = (): string => {
-    let classes = "w-full h-full object-contain";
-
-    if (tool.name === "Framer") {
-      classes += " p-1 sm:p-1.5 invert";
     }
 
     return classes;
@@ -143,7 +173,7 @@ const ToolCard: React.FC<{
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={`
-        group relative flex items-center gap-2 sm:gap-3 lg:gap-4 p-3 sm:p-4 lg:p-5 rounded-2xl cursor-pointer
+        tool-card group relative flex items-center gap-2 sm:gap-3 lg:gap-4 p-3 sm:p-4 lg:p-5 rounded-2xl cursor-pointer
         overflow-hidden z-10 transition-all duration-300 ease-out
         border bg-transparent w-full
         ${
@@ -166,11 +196,10 @@ const ToolCard: React.FC<{
         animate={{ scale: showActiveStyles ? 1.1 : 1 }}
         transition={springTransition}
       >
-        <img
+        <InlineSvg
           src={tool.logo}
-          alt={`${tool.name} logo`}
-          className={getImageClasses()}
-          loading="lazy"
+          className="w-full h-full object-contain"
+          isHovered={showActiveStyles}
         />
       </motion.div>
 
@@ -194,8 +223,8 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({
   buttonText = "Let's Get Started",
   buttonLink,
   onButtonClick,
-  backgroundColor = "#161616", // NEW: Default background color
-  className = "", // NEW: Additional classes
+  backgroundColor = "#161616",
+  className = "",
 }) => {
   const [activeId, setActiveId] = useState<number | null>(null);
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -235,7 +264,7 @@ const ToolsSection: React.FC<ToolsSectionProps> = ({
   return (
     <section
       ref={sectionRef}
-      style={{ backgroundColor }} // NEW: Dynamic background color
+      style={{ backgroundColor }}
       className={`w-full h-auto py-12 sm:py-16 lg:py-20 overflow-x-hidden ${className}`}
     >
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 relative z-10">

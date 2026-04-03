@@ -14,7 +14,6 @@ import {
   Trophy,
   Plus,
   Minus,
-  X,
 } from "lucide-react";
 import { portfolioItems, type PortfolioFaq } from "../../data/Portfoliodata";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
@@ -25,6 +24,78 @@ const featureIcons = [
   <Award className="w-5 h-5 text-gray-400" />,
   <Trophy className="w-5 h-5 text-gray-400" />,
 ];
+
+// ─── Sidebar ──────────────────────────────────────────────────────────────────
+function PortfolioSidebar({
+  detailRows,
+  onContactClick,
+}: {
+  detailRows: { icon: React.ReactNode; label: string; value: string }[];
+  onContactClick: () => void;
+}) {
+  return (
+    <div className="flex flex-col gap-4 sticky top-24">
+      {/* Project Details */}
+      <div className="rounded-2xl overflow-hidden border border-white/8">
+        <div className="bg-[#2E6BFF] px-5 py-3">
+          <h3 className="text-white font-semibold text-sm font-['Montserrat']">
+            Project Details
+          </h3>
+        </div>
+        <div className="px-5 py-4" style={{ background: "#1a1a1a" }}>
+          {detailRows.map((row, i) => (
+            <div key={i}>
+              <div className="py-3">
+                <div className="flex items-center gap-2 mb-0.5">
+                  {row.icon}
+                  <span className="text-white text-xs font-semibold font-['Montserrat']">
+                    {row.label}
+                  </span>
+                </div>
+                <p className="text-gray-400 text-xs pl-6 break-words font-['Montserrat']">
+                  {row.value}
+                </p>
+              </div>
+              {i < detailRows.length - 1 && <div className="h-px bg-white/5" />}
+            </div>
+          ))}
+          <div className="h-px bg-white/5" />
+          <div className="pt-3 flex items-center gap-2">
+            <Share2 className="w-4 h-4 text-gray-400" />
+            <span className="text-white text-xs font-semibold font-['Montserrat']">
+              Share:
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Contact */}
+      <div
+        className="rounded-2xl px-5 py-6 border border-white/8 flex flex-col items-center text-center gap-3"
+        style={{ background: "#1a1a1a" }}
+      >
+        <div className="w-12 h-12 rounded-full bg-[#2E6BFF]/15 flex items-center justify-center">
+          <div className="relative">
+            <Mail className="w-5 h-5 text-[#2E6BFF]" />
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-[#1a1a1a]" />
+          </div>
+        </div>
+        <p className="text-gray-400 text-xs leading-relaxed font-['Montserrat']">
+          We are always available to discuss with you
+        </p>
+        <p className="text-white text-xs font-medium font-['Montserrat']">
+          info@domain.com
+        </p>
+        <button
+          onClick={onContactClick}
+          className="flex items-center gap-2 bg-[#2E6BFF] hover:bg-[#1e5fcc] transition-colors text-white text-xs font-semibold px-5 py-2.5 rounded-full font-['Montserrat']"
+        >
+          Contact Us <ArrowRight className="w-3 h-3" />
+        </button>
+      </div>
+    </div>
+  );
+}
 
 // ─── FAQ Accordion ─────────────────────────────────────────────────────────────
 const FaqAccordion: React.FC<{
@@ -71,110 +142,11 @@ const FaqAccordion: React.FC<{
   );
 };
 
-// ─── Mobile Sidebar Drawer ────────────────────────────────────────────────────
-const MobileSidebarDrawer: React.FC<{
-  isOpen: boolean;
-  onClose: () => void;
-  detailRows: any[];
-  onContactClick: () => void;
-}> = ({ isOpen, onClose, detailRows, onContactClick }) => {
-  return (
-    <>
-      {/* Overlay */}
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 lg:hidden"
-        />
-      )}
-
-      {/* Drawer */}
-      <motion.div
-        initial={{ x: "100%" }}
-        animate={{ x: isOpen ? 0 : "100%" }}
-        transition={{ duration: 0.3, ease: smoothEase }}
-        className="fixed right-0 top-0 h-full w-[280px] sm:w-[320px] bg-[#111111] z-50 lg:hidden shadow-2xl overflow-y-auto"
-      >
-        <div className="sticky top-0 bg-[#111111] z-10 px-4 py-4 border-b border-white/10 flex justify-between items-center">
-          <h3 className="text-white font-semibold text-base">Project Info</h3>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"
-          >
-            <X className="w-4 h-4 text-white" />
-          </button>
-        </div>
-
-        <div className="p-4 space-y-5">
-          {/* Project Details */}
-          <div className="rounded-2xl overflow-hidden border border-white/8">
-            <div className="bg-[#2E6BFF] px-4 py-3">
-              <h3 className="text-white font-semibold text-sm">
-                Project Details
-              </h3>
-            </div>
-            <div className="px-4 py-3" style={{ background: "#1a1a1a" }}>
-              {detailRows.map((row, i) => (
-                <div key={i}>
-                  <div className="py-3">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      {row.icon}
-                      <span className="text-white text-xs font-semibold">
-                        {row.label}
-                      </span>
-                    </div>
-                    <p className="text-gray-400 text-xs pl-6">{row.value}</p>
-                  </div>
-                  {i < detailRows.length - 1 && (
-                    <div className="h-px bg-white/5" />
-                  )}
-                </div>
-              ))}
-              <div className="h-px bg-white/5" />
-              <div className="pt-3 flex items-center gap-2">
-                <Share2 className="w-4 h-4 text-gray-400" />
-                <span className="text-white text-xs font-semibold">Share:</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact */}
-          <div
-            className="rounded-2xl px-4 py-5 border border-white/8 flex flex-col items-center text-center gap-3"
-            style={{ background: "#1a1a1a" }}
-          >
-            <div className="w-12 h-12 rounded-full bg-[#2E6BFF]/15 flex items-center justify-center">
-              <div className="relative">
-                <Mail className="w-5 h-5 text-[#2E6BFF]" />
-                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-[#1a1a1a]" />
-              </div>
-            </div>
-            <p className="text-gray-400 text-xs leading-relaxed">
-              We are always available to discuss with you
-            </p>
-            <p className="text-white text-xs font-medium">info@domain.com</p>
-            <button
-              onClick={onContactClick}
-              className="flex items-center gap-2 bg-[#2E6BFF] hover:bg-[#1e5fcc] transition-colors text-white text-xs font-semibold px-5 py-2.5 rounded-full"
-            >
-              Contact Us <ArrowRight className="w-3 h-3" />
-            </button>
-          </div>
-        </div>
-      </motion.div>
-    </>
-  );
-};
-
 // ─── Main Page ────────────────────────────────────────────────────────────────
 const PortfolioSinglePage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [hasAnimated, setHasAnimated] = useState(false);
-  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
 
@@ -227,16 +199,8 @@ const PortfolioSinglePage: React.FC = () => {
       ref={sectionRef}
       className="min-h-screen bg-[#111111] font-['Montserrat']"
     >
-      {/* Mobile Sidebar Drawer */}
-      <MobileSidebarDrawer
-        isOpen={isMobileDrawerOpen}
-        onClose={() => setIsMobileDrawerOpen(false)}
-        detailRows={detailRows}
-        onContactClick={() => navigate("/contact")}
-      />
-
       {/* Hero Header with Breadcrumb Design like Blog Page */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-8 sm:pt-10 pb-12 sm:pb-16">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-8 sm:pt-10 pb-6 sm:pb-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
@@ -260,91 +224,20 @@ const PortfolioSinglePage: React.FC = () => {
       {/* ── Body ── */}
       <div className="max-w-[1350px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 pb-16 sm:pb-20">
         <div className="flex flex-col lg:flex-row gap-6 md:gap-8 lg:gap-10">
-          {/* ── SIDEBAR (Desktop - Sticky) ── */}
+          {/* Sidebar - Always visible on all screen sizes, stacks on mobile */}
           <motion.aside
             initial={{ opacity: 0, x: -24 }}
             animate={
               hasAnimated ? { opacity: 1, x: 0 } : { opacity: 0, x: -24 }
             }
             transition={{ duration: 0.6, delay: 0.2, ease: smoothEase }}
-            className="hidden lg:block w-full lg:w-[280px] xl:w-[300px] flex-shrink-0"
+            className="w-full lg:w-[280px] xl:w-[300px] flex-shrink-0"
           >
-            <div className="sticky top-24 space-y-5">
-              {/* Project Details */}
-              <div className="rounded-2xl overflow-hidden border border-white/8">
-                <div className="bg-[#2E6BFF] px-5 py-3">
-                  <h3 className="text-white font-semibold text-sm">
-                    Project Details
-                  </h3>
-                </div>
-                <div className="px-5 py-4" style={{ background: "#1a1a1a" }}>
-                  {detailRows.map((row, i) => (
-                    <div key={i}>
-                      <div className="py-3">
-                        <div className="flex items-center gap-2 mb-0.5">
-                          {row.icon}
-                          <span className="text-white text-xs font-semibold">
-                            {row.label}
-                          </span>
-                        </div>
-                        <p className="text-gray-400 text-xs pl-6 break-words">
-                          {row.value}
-                        </p>
-                      </div>
-                      {i < detailRows.length - 1 && (
-                        <div className="h-px bg-white/5" />
-                      )}
-                    </div>
-                  ))}
-                  <div className="h-px bg-white/5" />
-                  <div className="pt-3 flex items-center gap-2">
-                    <Share2 className="w-4 h-4 text-gray-400" />
-                    <span className="text-white text-xs font-semibold">
-                      Share:
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Contact */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={
-                  hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
-                }
-                transition={{ duration: 0.5, delay: 0.3, ease: smoothEase }}
-                className="rounded-2xl px-5 py-6 border border-white/8 flex flex-col items-center text-center gap-3"
-                style={{ background: "#1a1a1a" }}
-              >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={hasAnimated ? { scale: 1 } : { scale: 0 }}
-                  transition={{ duration: 0.4, delay: 0.4, ease: smoothEase }}
-                  className="w-12 h-12 rounded-full bg-[#2E6BFF]/15 flex items-center justify-center"
-                >
-                  <div className="relative">
-                    <Mail className="w-5 h-5 text-[#2E6BFF]" />
-                    <motion.span
-                      initial={{ scale: 0 }}
-                      animate={hasAnimated ? { scale: 1 } : { scale: 0 }}
-                      transition={{ duration: 0.3, delay: 0.5 }}
-                      className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-[#1a1a1a]"
-                    />
-                  </div>
-                </motion.div>
-                <p className="text-gray-400 text-xs leading-relaxed">
-                  We are always available to discuss with you
-                </p>
-                <p className="text-white text-xs font-medium">
-                  info@domain.com
-                </p>
-                <button
-                  onClick={() => navigate("/contact")}
-                  className="flex items-center gap-2 bg-[#2E6BFF] hover:bg-[#1e5fcc] transition-colors text-white text-xs font-semibold px-5 py-2.5 rounded-full"
-                >
-                  Contact Us <ArrowRight className="w-3 h-3" />
-                </button>
-              </motion.div>
+            <div className="lg:sticky lg:top-24">
+              <PortfolioSidebar
+                detailRows={detailRows}
+                onContactClick={() => navigate("/contact")}
+              />
             </div>
           </motion.aside>
 
@@ -355,22 +248,6 @@ const PortfolioSinglePage: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.25, ease: smoothEase }}
             className="flex-1 min-w-0 space-y-8 sm:space-y-10"
           >
-            {/* Mobile Info Button */}
-            <div className="lg:hidden mb-4">
-              <button
-                onClick={() => setIsMobileDrawerOpen(true)}
-                className="w-full flex items-center justify-between gap-2 bg-[#1e1e1e] rounded-xl px-4 py-3 border border-white/10"
-              >
-                <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-[#2E6BFF]" />
-                  <span className="text-white text-sm font-medium">
-                    Project Details & Contact
-                  </span>
-                </div>
-                <ArrowRight className="w-4 h-4 text-gray-400" />
-              </button>
-            </div>
-
             {/* Hero image */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -398,10 +275,10 @@ const PortfolioSinglePage: React.FC = () => {
               }
               transition={{ duration: 0.5, delay: 0.35, ease: smoothEase }}
             >
-              <h2 className="text-white text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4">
+              <h2 className="text-white text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4 font-['Montserrat']">
                 Project overview
               </h2>
-              <div className="space-y-3 sm:space-y-4 text-gray-400 text-sm sm:text-base leading-relaxed">
+              <div className="space-y-3 sm:space-y-4 text-gray-400 text-sm sm:text-base leading-relaxed font-['Montserrat']">
                 {item.overview.map((para, i) => (
                   <p key={i}>{para}</p>
                 ))}
@@ -416,10 +293,10 @@ const PortfolioSinglePage: React.FC = () => {
               }
               transition={{ duration: 0.5, delay: 0.4, ease: smoothEase }}
             >
-              <h2 className="text-white text-xl sm:text-2xl md:text-3xl font-bold mb-3">
+              <h2 className="text-white text-xl sm:text-2xl md:text-3xl font-bold mb-3 font-['Montserrat']">
                 The challenge of project
               </h2>
-              <p className="text-gray-400 text-sm sm:text-base leading-relaxed mb-4 sm:mb-5">
+              <p className="text-gray-400 text-sm sm:text-base leading-relaxed mb-4 sm:mb-5 font-['Montserrat']">
                 {item.challengeIntro}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-5 sm:mb-7">
@@ -437,7 +314,7 @@ const PortfolioSinglePage: React.FC = () => {
                       delay: hasAnimated ? 0.45 + i * 0.07 : 0,
                       ease: smoothEase,
                     }}
-                    className="flex items-center gap-2 text-gray-300 text-sm"
+                    className="flex items-center gap-2 text-gray-300 text-sm font-['Montserrat']"
                   >
                     <CheckCircle2 className="w-4 h-4 text-[#2E6BFF] flex-shrink-0" />
                     <span className="break-words">{ch}</span>
@@ -471,10 +348,10 @@ const PortfolioSinglePage: React.FC = () => {
               }
               transition={{ duration: 0.5, delay: 0.55, ease: smoothEase }}
             >
-              <h2 className="text-white text-xl sm:text-2xl md:text-3xl font-bold mb-3">
+              <h2 className="text-white text-xl sm:text-2xl md:text-3xl font-bold mb-3 font-['Montserrat']">
                 Features of project
               </h2>
-              <p className="text-gray-400 text-sm sm:text-base leading-relaxed mb-4 sm:mb-6">
+              <p className="text-gray-400 text-sm sm:text-base leading-relaxed mb-4 sm:mb-6 font-['Montserrat']">
                 {item.featuresIntro}
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
@@ -497,10 +374,10 @@ const PortfolioSinglePage: React.FC = () => {
                       {featureIcons[i] ?? featureIcons[0]}
                     </div>
                     <div>
-                      <h4 className="text-white text-sm sm:text-base font-semibold mb-1">
+                      <h4 className="text-white text-sm sm:text-base font-semibold mb-1 font-['Montserrat']">
                         {f.title}
                       </h4>
-                      <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
+                      <p className="text-gray-400 text-xs sm:text-sm leading-relaxed font-['Montserrat']">
                         {f.description}
                       </p>
                     </div>
@@ -519,11 +396,11 @@ const PortfolioSinglePage: React.FC = () => {
             >
               <div className="flex items-center gap-2 mb-2">
                 <Plus className="w-3 h-3 text-[#2E6BFF]" />
-                <span className="text-[#2E6BFF] text-xs font-semibold uppercase tracking-widest">
+                <span className="text-[#2E6BFF] text-xs font-semibold uppercase tracking-widest font-['Montserrat']">
                   FAQ's
                 </span>
               </div>
-              <h2 className="text-white text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6">
+              <h2 className="text-white text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 font-['Montserrat']">
                 Find your answers here
               </h2>
               <div className="space-y-3">

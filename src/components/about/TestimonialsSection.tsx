@@ -38,22 +38,6 @@ const testimonials: Testimonial[] = [
 
 const smoothEase: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
-const StarIcon = () => (
-  <svg className="w-4 h-4 text-blue-500 fill-current" viewBox="0 0 20 20">
-    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-  </svg>
-);
-
-const SparkleIcon = () => (
-  <svg
-    className="w-4 h-4 text-blue-500"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-  >
-    <path d="M12 2L13.09 8.26L19 7L14.74 11.27L21 14L14.74 16.73L19 21L13.09 19.74L12 26L10.91 19.74L5 21L9.26 16.73L3 14L9.26 11.27L5 7L10.91 8.26L12 2Z" />
-  </svg>
-);
-
 const TestimonialCard: React.FC<{
   testimonial: Testimonial;
   index: number;
@@ -75,10 +59,10 @@ const TestimonialCard: React.FC<{
       }}
       className="group relative bg-[#2a2a2a] rounded-3xl p-8 transition-all duration-500 hover:scale-[1.02] hover:bg-[#323232]"
     >
-      {/* Rating Stars with staggered animation */}
+      {/* Rating Stars with staggered animation - using text stars */}
       <div className="flex gap-1 mb-6">
         {[...Array(testimonial.rating)].map((_, i) => (
-          <motion.div
+          <motion.span
             key={i}
             initial={{ opacity: 0, scale: 0 }}
             animate={
@@ -89,9 +73,10 @@ const TestimonialCard: React.FC<{
               delay: isAnimated ? delay + index * 0.1 + i * 0.05 : 0,
               ease: "backOut",
             }}
+            className="text-[#2A7DFF] text-base"
           >
-            <StarIcon />
-          </motion.div>
+            ★
+          </motion.span>
         ))}
       </div>
 
@@ -185,7 +170,7 @@ const TestimonialsSection: React.FC = () => {
       <div className="max-w-[1400px] bg-[#1e1e1e] rounded-3xl p-8 mx-auto">
         {/* Section Header */}
         <div className="mb-16">
-          {/* Label with sparkle animation */}
+          {/* Label with sparkle animation - using text star */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={
@@ -194,7 +179,7 @@ const TestimonialsSection: React.FC = () => {
             transition={{ duration: 0.5, delay: 0.2, ease: smoothEase }}
             className="flex items-center gap-2 mb-6"
           >
-            <motion.div
+            <motion.span
               initial={{ rotate: 0, scale: 0 }}
               animate={
                 hasAnimated
@@ -202,9 +187,10 @@ const TestimonialsSection: React.FC = () => {
                   : { rotate: 0, scale: 0 }
               }
               transition={{ duration: 0.6, delay: 0.3, ease: "backOut" }}
+              className="text-[#2A7DFF] text-lg"
             >
-              <SparkleIcon />
-            </motion.div>
+              ✦
+            </motion.span>
             <span className="text-white font-medium text-sm tracking-wide">
               Our Team
             </span>

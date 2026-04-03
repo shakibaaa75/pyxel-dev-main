@@ -12,8 +12,8 @@ function ArrowIcon({ active }: { active?: boolean }) {
     <div
       className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
         active
-          ? "bg-[#2979FF] -rotate-45"
-          : "bg-[#2a2a2a] rotate-0 group-hover:bg-[#2979FF] group-hover:-rotate-45"
+          ? "bg-[#2979FF] rotate-45"
+          : "bg-[#2a2a2a] rotate-0 group-hover:bg-[#2979FF] group-hover:rotate-45"
       }`}
     >
       <svg
@@ -117,7 +117,7 @@ export default function ServicesGridCards() {
       ref={sectionRef}
       className="min-h-screen bg-[#111111] font-['Montserrat'] overflow-x-hidden"
     >
-      <div className="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-8 sm:pt-10 pb-12 sm:pb-16">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-8 sm:pt-10 pb-12 sm:pb-16">
         {/* Hero Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
