@@ -21,10 +21,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
   onButtonClick,
   backgroundImage = "/images/HerosecBg.png",
 }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  // FIX: Disable parallax on mobile. CSS transform on any ancestor element creates
-  // a new stacking context which breaks position:sticky on the header above.
-  // On mobile (<1024px) we skip the y/opacity motion values entirely.
+  const [textLoaded, setTextLoaded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -34,16 +31,16 @@ const HeroSection: React.FC<HeroSectionProps> = ({
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  const { scrollY } = useScroll();
+  // Trigger text animations after mount — decoupled from image load
+  useEffect(() => {
+    setTextLoaded(true);
+  }, []);
 
+  const { scrollY } = useScroll();
   const backgroundY = useTransform(scrollY, [0, 500], [0, 150]);
   const overlayY = useTransform(scrollY, [0, 500], [0, 100]);
   const contentY = useTransform(scrollY, [0, 500], [0, -50]);
   const opacity = useTransform(scrollY, [0, 300, 600], [1, 0.8, 0.4]);
-
-  useEffect(() => {
-    setIsLoaded(true);
-  }, []);
 
   const renderAnimatedText = (text: string, baseDelay = 0) => {
     return text.split("").map((letter, index) => {
@@ -52,7 +49,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         <span
           key={index}
           className={`inline-block transition-all duration-200 ease-out ${
-            isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            textLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
           style={{ transitionDelay: `${delay}s` }}
         >
@@ -68,15 +65,14 @@ const HeroSection: React.FC<HeroSectionProps> = ({
         className="absolute inset-0 z-0"
         style={{ y: isMobile ? 0 : backgroundY }}
       >
+        {/* LCP image — always visible, no opacity gate, no scale animation */}
         <img
           src={backgroundImage}
           alt="Professional woman working late"
-          className="w-full h-full object-cover object-center transition-all duration-500 ease-out"
-          style={{
-            opacity: isLoaded ? 1 : 0,
-            transform: isLoaded ? "scale(1)" : "scale(1.1)",
-          }}
-          onLoad={() => setIsLoaded(true)}
+          className="w-full h-full object-cover object-center"
+          fetchPriority="high"
+          loading="eager"
+          decoding="sync"
         />
       </motion.div>
 
@@ -88,6 +84,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           src="/images/Bgoverlay.png"
           alt=""
           className="w-full h-auto object-cover object-bottom"
+          loading="lazy"
         />
       </motion.div>
 
@@ -110,10 +107,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({
                   style={{
                     background: "#0944A0",
                     borderRadius: "26px",
-                    transform: isLoaded
+                    transform: textLoaded
                       ? "rotate(-2deg) scale(1)"
                       : "rotate(-2deg) scale(0.7)",
-                    opacity: isLoaded ? 1 : 0,
+                    opacity: textLoaded ? 1 : 0,
                     transitionDelay: "0.15s",
                   }}
                 />
@@ -126,7 +123,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
 
             <p
               className={`font-['Rethink_Sans'] text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 max-w-xl leading-relaxed transition-all duration-400 ease-out ${
-                isLoaded
+                textLoaded
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-4"
               }`}
@@ -137,7 +134,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
 
             <div
               className={`pt-3 sm:pt-4 transition-all duration-400 ease-out ${
-                isLoaded
+                textLoaded
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-4"
               }`}
