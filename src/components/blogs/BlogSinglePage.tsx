@@ -1,17 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { blogPosts } from "../../data/BlogPost";
+import { fetchBlogBySlug, type BlogPost } from "../../api/blogs";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 
-// Types
-interface FormData {
-  comment: string;
-  name: string;
-  email: string;
-  website: string;
-  saveInfo: boolean;
-}
-
+// ── Icons ─────────────────────────────────────────────────────────
 function ArrowIcon({ className = "" }: { className?: string }) {
   return (
     <svg
@@ -184,12 +176,46 @@ function SocialIcon({ name }: { name: string }) {
       </svg>
     ),
   };
-  return icons[name] || null;
+  return <>{icons[name] || null}</>;
 }
 
+// ── Helper: Split plain text into structured content ─────────────────────
+function parseContent(content: string, excerpt: string, tags: string[]) {
+  const paragraphs = content
+    .split(/\\n+/)
+    .map((p) => p.trim())
+    .filter((p) => p.length > 0);
+
+  const total = paragraphs.length;
+  const mid = Math.floor(total / 2);
+
+  return {
+    intro1: paragraphs[0] || excerpt,
+    intro2: paragraphs[1] || "",
+    quote: excerpt,
+    body: paragraphs.slice(2, mid).join("\\n\\n") || content.substring(0, 300),
+    subheading: "Key Takeaways",
+    subIntro:
+      paragraphs[mid] || "Here are the main points discussed in this article:",
+    bullets:
+      tags.length > 0
+        ? tags.map((tag) => `${tag} strategies and best practices`)
+        : [
+            "Industry insights and analysis",
+            "Practical implementation tips",
+            "Expert recommendations",
+          ],
+    closing: paragraphs[paragraphs.length - 1] || excerpt,
+  };
+}
+
+// ── Component ─────────────────────────────────────────────────────
 export default function BlogSinglePage() {
   const { slug } = useParams<{ slug: string }>();
-  const [formData, setFormData] = useState<FormData>({
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
     comment: "",
     name: "",
     email: "",
@@ -197,30 +223,40 @@ export default function BlogSinglePage() {
     saveInfo: false,
   });
 
-  // Find the post by slug
-  const post = blogPosts.find((p) => p.slug === slug);
-
-  // Custom breadcrumb items for blog post
-  const breadcrumbItems = [
-    { label: "Home", path: "/", isLast: false },
-    { label: "Blogs", path: "/blogs", isLast: false },
-    { label: post?.title || "Blog Post", path: "#", isLast: true },
-  ];
-
   useEffect(() => {
-    console.log("BlogSinglePage loaded");
-    console.log("Slug:", slug);
-    console.log("Post found:", !!post);
-  }, [slug, post]);
+    if (!slug) return;
+    setLoading(true);
+    setError(null);
+    fetchBlogBySlug(slug)
+      .then(setPost)
+      .catch((err) => {
+        console.error("Failed to fetch blog:", err);
+        setError(err.message);
+      })
+      .finally(() => setLoading(false));
+  }, [slug]);
 
-  // If post not found
-  if (!post) {
+  if (loading) {
     return (
-      <div className="bg-[#161616] min-h-screen flex items-center justify-center font-['Montserrat']">
+      <div
+        className="bg-[#161616] min-h-screen flex items-center justify-center"
+        style={{ fontFamily: "Montserrat, sans-serif" }}
+      >
+        <div className="text-white text-lg">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error || !post) {
+    return (
+      <div
+        className="bg-[#161616] min-h-screen flex items-center justify-center"
+        style={{ fontFamily: "Montserrat, sans-serif" }}
+      >
         <div className="text-white text-center px-4">
           <h2 className="text-2xl font-bold mb-4">Post Not Found</h2>
-          <p className="text-[#aaa] mb-4">
-            The blog post you're looking for doesn't exist.
+          <p className="text-gray-400 mb-4">
+            {error || "The blog post you're looking for doesn't exist."}
           </p>
           <Link
             to="/blogs"
@@ -233,30 +269,42 @@ export default function BlogSinglePage() {
     );
   }
 
+  const content = parseContent(post.content.body, post.excerpt, post.tags);
+
+  const breadcrumbItems = [
+    { label: "Home", path: "/", isLast: false },
+    { label: "Blogs", path: "/blogs", isLast: false },
+    { label: post.title, path: "#", isLast: true },
+  ];
+
   return (
-    <div className="bg-[#161616] min-h-screen font-['Montserrat']">
+    <div
+      className="bg-[#161616] min-h-screen"
+      style={{ fontFamily: "Montserrat, sans-serif" }}
+    >
       <div className="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 pb-12 sm:pb-16">
-        {/* Title Section - Original Design */}
+        {/* Title Section */}
         <div className="bg-[#1e1e1e] rounded-[20px] p-6 sm:p-8 lg:p-10 mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4 leading-tight">
             {post.title}
           </h1>
-          {/* Breadcrumb under title */}
           <div className="mt-2">
             <Breadcrumb customItems={breadcrumbItems} />
           </div>
         </div>
 
         {/* Featured Image */}
-        <div className="rounded-[20px] overflow-hidden mb-6 sm:mb-8 h-[250px] sm:h-[350px] md:h-[420px]">
-          <img
-            src={post.image}
-            alt={post.title}
-            className="w-full h-full object-cover"
-          />
-        </div>
+        {post.image && (
+          <div className="rounded-[20px] overflow-hidden mb-6 sm:mb-8 h-[250px] sm:h-[350px] md:h-[420px]">
+            <img
+              src={post.image}
+              alt={post.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
 
-        {/* Meta Information - Date, Read Time, Author, Category */}
+        {/* Meta Information */}
         <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-400 mb-8 sm:mb-10 pb-4 border-b border-white/10">
           <div className="flex items-center gap-2">
             <CalendarIcon />
@@ -279,11 +327,14 @@ export default function BlogSinglePage() {
         {/* Content */}
         <div className="space-y-5 sm:space-y-6">
           <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
-            {post.content.intro1}
+            {content.intro1}
           </p>
-          <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
-            {post.content.intro2}
-          </p>
+
+          {content.intro2 && (
+            <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
+              {content.intro2}
+            </p>
+          )}
 
           {/* Quote */}
           <div className="bg-[#2979FF] rounded-[16px] p-5 sm:p-6 md:p-7">
@@ -292,25 +343,30 @@ export default function BlogSinglePage() {
                 <QuoteIcon />
               </div>
               <p className="text-white text-sm sm:text-base leading-relaxed font-medium">
-                {post.content.quote}
+                {content.quote}
               </p>
             </div>
           </div>
 
-          <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
-            {post.content.body}
-          </p>
+          {content.body && (
+            <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
+              {content.body}
+            </p>
+          )}
 
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
-            {post.content.subheading}
+            {content.subheading}
           </h2>
-          <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
-            {post.content.subIntro}
-          </p>
+
+          {content.subIntro && (
+            <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
+              {content.subIntro}
+            </p>
+          )}
 
           {/* Bullets */}
           <ul className="space-y-2 sm:space-y-3">
-            {post.content.bullets.map((item, i) => (
+            {content.bullets.map((item, i) => (
               <li
                 key={i}
                 className="flex items-start gap-2 sm:gap-3 text-gray-300 text-sm sm:text-base"
@@ -323,56 +379,60 @@ export default function BlogSinglePage() {
             ))}
           </ul>
 
-          <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
-            {post.content.closing}
-          </p>
+          {content.closing && (
+            <p className="text-gray-300 text-sm sm:text-base leading-relaxed">
+              {content.closing}
+            </p>
+          )}
 
           <div className="h-px bg-white/10 my-6 sm:my-8" />
 
           {/* Tags */}
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-            <span className="text-white font-semibold text-sm sm:text-base">
-              Tags:
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="bg-[#2979FF] text-white text-xs px-3 sm:px-4 py-1.5 rounded-full hover:bg-[#1a65e0] transition-colors cursor-pointer"
-                >
-                  {tag}
-                </span>
-              ))}
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+              <span className="text-white font-semibold text-sm sm:text-base">
+                Tags:
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {post.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="bg-[#2979FF] text-white text-xs px-3 sm:px-4 py-1.5 rounded-full hover:bg-[#1a65e0] transition-colors cursor-pointer"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Social Links */}
           <div className="flex gap-3 sm:gap-4 pt-4">
             <a
               href="#"
               className="text-gray-400 hover:text-[#2979FF] transition-colors"
-              aria-label="Share on Instagram"
+              aria-label="Instagram"
             >
               <SocialIcon name="Instagram" />
             </a>
             <a
               href="#"
               className="text-gray-400 hover:text-[#2979FF] transition-colors"
-              aria-label="Share on Facebook"
+              aria-label="Facebook"
             >
               <SocialIcon name="Facebook" />
             </a>
             <a
               href="#"
               className="text-gray-400 hover:text-[#2979FF] transition-colors"
-              aria-label="Share on YouTube"
+              aria-label="YouTube"
             >
               <SocialIcon name="YouTube" />
             </a>
             <a
               href="#"
               className="text-gray-400 hover:text-[#2979FF] transition-colors"
-              aria-label="Share on LinkedIn"
+              aria-label="LinkedIn"
             >
               <SocialIcon name="LinkedIn" />
             </a>
